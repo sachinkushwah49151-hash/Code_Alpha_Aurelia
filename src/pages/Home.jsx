@@ -40,7 +40,7 @@ export const Home = () => {
       {/* ========================================================
           1. PRODUCT-STUDIO HERO SECTION
       ======================================================== */}
-      <section className="relative pt-6 sm:pt-10 lg:pt-14 overflow-hidden">
+      <section className="relative min-h-[600px] lg:min-h-[720px] flex items-center pt-6 sm:pt-10 lg:pt-14 pb-8 sm:pb-12 overflow-hidden">
         {/* Interactive 3D Ambient Background */}
         <Background3D />
 

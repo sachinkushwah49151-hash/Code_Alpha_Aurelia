@@ -143,8 +143,7 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
     const deltaX = endX - touchStartRef.current.x;
     const deltaY = endY - touchStartRef.current.y;
 
-    // Horizontal swipe threshold: 40px and more horizontal than vertical
-    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY)) {
       markUserInteraction();
       if (deltaX < 0) {
         handleNext();
@@ -169,85 +168,35 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
 
   return (
     <section
-      className={`relative w-full py-16 sm:py-24 bg-[#faf8f5] overflow-hidden border-y border-stone-200/80 select-none ${className}`}
+      className={`relative w-full py-10 sm:py-14 bg-[#faf8f5] overflow-hidden border-y border-stone-200/80 select-none ${className}`}
       aria-label="3D Coverflow Featured Collection Carousel"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background Soft Studio Ambient Glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[550px] rounded-full pointer-events-none -z-10"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, rgba(197, 168, 128, 0.12) 0%, rgba(250, 248, 245, 0.6) 65%, transparent 100%)',
-        }}
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-14 gap-5">
-          <div>
-            <div className="inline-flex items-center gap-2 mb-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#b38a4a]" />
-              <span className="text-xs font-mono font-medium tracking-[0.25em] uppercase text-[#b38a4a]">
-                {eyebrow}
-              </span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight text-neutral-950">
-              {title.includes('Collection') ? (
-                <>
-                  {title.replace('Collection', '')}
-                  <span className="font-semibold">Collection</span>
-                </>
-              ) : (
-                title
-              )}
-            </h2>
-            <p className="text-sm sm:text-base text-neutral-600 font-normal mt-2 max-w-xl leading-relaxed">
-              {subtitle}
-            </p>
-          </div>
-
-          {/* Desktop Navigation Controls Header */}
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-mono font-medium text-stone-500 tracking-widest hidden sm:inline-block mr-2">
-              {String(activeIndex + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
-            </span>
-
-            <button
-              onClick={() => {
-                markUserInteraction();
-                handlePrev();
-              }}
-              className="w-11 h-11 rounded-full border border-stone-200/90 bg-white/90 hover:bg-stone-50 active:scale-95 text-neutral-800 hover:text-neutral-950 hover:border-[#b38a4a]/50 transition-all flex items-center justify-center shadow-sm hover:shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a]"
-              aria-label="Previous product"
-            >
-              <ChevronLeft className="w-5 h-5 text-neutral-700" />
-            </button>
-
-            <button
-              onClick={() => {
-                markUserInteraction();
-                handleNext();
-              }}
-              className="w-11 h-11 rounded-full border border-stone-200/90 bg-white/90 hover:bg-stone-50 active:scale-95 text-neutral-800 hover:text-neutral-950 hover:border-[#b38a4a]/50 transition-all flex items-center justify-center shadow-sm hover:shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a]"
-              aria-label="Next product"
-            >
-              <ChevronRight className="w-5 h-5 text-neutral-700" />
-            </button>
-          </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header (Centered, Clean Editorial) */}
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+          <p className="text-xs font-mono font-medium tracking-[0.28em] uppercase text-[#b38a4a] mb-1.5">
+            {eyebrow}
+          </p>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-neutral-950">
+            {title}
+          </h2>
+          <p className="text-sm sm:text-base text-neutral-600 font-normal mt-2 leading-relaxed">
+            {subtitle}
+          </p>
         </div>
 
-        {/* 3D Coverflow Stage */}
+        {/* Compact 3D Coverflow Stage (Height: 420-440px) */}
         <div
           ref={containerRef}
           tabIndex={0}
           onKeyDown={handleKeyDown}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          className="relative w-full h-[470px] sm:h-[520px] lg:h-[550px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a]/30 rounded-3xl"
+          className="relative w-full h-[420px] sm:h-[440px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a]/30 rounded-2xl"
           style={{
-            perspective: '1200px',
+            perspective: '1100px',
             transformStyle: 'preserve-3d',
           }}
           aria-roledescription="carousel"
@@ -268,48 +217,40 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
               );
             }
 
-            // Dynamic 3D Transform values
+            // Calibrated 3D Transform values (Center: 1.0/1.0, Adjacent: 0.85/0.75, Far: 0.70/0.45)
             let transformStyle = '';
             let zIndex = 10;
-            let opacity = 0.25;
-            let filter = 'blur(1.5px)';
+            let opacity = 0.45;
 
             if (prefersReducedMotion) {
-              // Reduced motion: flat 2D arrangement
-              const shiftX = diff * 70;
-              transformStyle = `translateX(${shiftX}%) scale(${isCenter ? 1 : 0.88})`;
-              opacity = isCenter ? 1 : 0.45;
+              const shiftX = diff * 65;
+              transformStyle = `translateX(${shiftX}%) scale(${isCenter ? 1 : 0.86})`;
+              opacity = isCenter ? 1 : 0.6;
               zIndex = isCenter ? 30 : 20 - Math.abs(diff);
-              filter = 'none';
             } else if (isCenter) {
               transformStyle = 'translateX(0%) translateZ(40px) rotateY(0deg) scale(1)';
               zIndex = 30;
               opacity = 1;
-              filter = 'none';
             } else if (diff === 1) {
-              // Immediate Right
-              transformStyle = 'translateX(62%) translateZ(-130px) rotateY(-34deg) scale(0.85)';
+              // Immediate Right (Crisp, High Contrast, Visible)
+              transformStyle = 'translateX(64%) translateZ(-90px) rotateY(-30deg) scale(0.85)';
               zIndex = 20;
-              opacity = 0.65;
-              filter = 'blur(0.5px)';
+              opacity = 0.75;
             } else if (diff === -1) {
-              // Immediate Left
-              transformStyle = 'translateX(-62%) translateZ(-130px) rotateY(34deg) scale(0.85)';
+              // Immediate Left (Crisp, High Contrast, Visible)
+              transformStyle = 'translateX(-64%) translateZ(-90px) rotateY(30deg) scale(0.85)';
               zIndex = 20;
-              opacity = 0.65;
-              filter = 'blur(0.5px)';
+              opacity = 0.75;
             } else if (diff === 2) {
               // Far Right
-              transformStyle = 'translateX(118%) translateZ(-280px) rotateY(-48deg) scale(0.70)';
+              transformStyle = 'translateX(116%) translateZ(-190px) rotateY(-44deg) scale(0.70)';
               zIndex = 10;
-              opacity = 0.28;
-              filter = 'blur(1.8px)';
+              opacity = 0.45;
             } else if (diff === -2) {
               // Far Left
-              transformStyle = 'translateX(-118%) translateZ(-280px) rotateY(48deg) scale(0.70)';
+              transformStyle = 'translateX(-116%) translateZ(-190px) rotateY(44deg) scale(0.70)';
               zIndex = 10;
-              opacity = 0.28;
-              filter = 'blur(1.8px)';
+              opacity = 0.45;
             }
 
             return (
@@ -324,33 +265,32 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
                     goToSlide(idx);
                   }
                 }}
-                className={`absolute w-[290px] sm:w-[330px] lg:w-[360px] cursor-pointer will-change-transform ${
-                  isCenter ? 'cursor-default' : 'hover:opacity-85'
+                className={`absolute w-[285px] sm:w-[305px] lg:w-[315px] h-[410px] sm:h-[430px] cursor-pointer will-change-transform ${
+                  isCenter ? 'cursor-default' : 'hover:opacity-95'
                 }`}
                 style={{
                   transform: transformStyle,
                   zIndex,
                   opacity,
-                  filter,
                   transition: prefersReducedMotion
-                    ? 'transform 300ms ease, opacity 300ms ease'
-                    : 'transform 650ms cubic-bezier(0.16, 1, 0.3, 1), opacity 650ms cubic-bezier(0.16, 1, 0.3, 1), filter 650ms ease, box-shadow 650ms ease',
+                    ? 'transform 280ms ease, opacity 280ms ease'
+                    : 'transform 600ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 600ms ease',
                 }}
               >
                 {/* Product Card Container */}
                 <div
-                  className={`relative rounded-3xl bg-white border overflow-hidden transition-all duration-300 ${
+                  className={`relative w-full h-full rounded-2xl bg-white border flex flex-col justify-between overflow-hidden transition-all duration-300 ${
                     isCenter
-                      ? 'border-[#b38a4a]/40 shadow-2xl shadow-stone-900/12 ring-1 ring-[#b38a4a]/20'
-                      : 'border-stone-200/80 shadow-md shadow-stone-900/5'
+                      ? 'border-[#b38a4a]/45 shadow-xl shadow-stone-900/12 ring-1 ring-[#b38a4a]/20'
+                      : 'border-stone-300 shadow-md shadow-stone-900/8'
                   }`}
                 >
                   {/* Top Image Stage */}
-                  <div className="relative aspect-[4/3.3] w-full bg-[#f6f4f0] overflow-hidden flex items-center justify-center p-6 border-b border-stone-100">
+                  <div className="relative h-[210px] sm:h-[225px] w-full bg-[#f8f6f2] overflow-hidden flex items-center justify-center p-4 border-b border-stone-200/70">
                     {/* Badge */}
                     {product.badge && (
-                      <div className="absolute top-3.5 left-3.5 z-10">
-                        <span className="inline-block px-2.5 py-1 rounded-full bg-white/95 text-[10px] font-mono font-medium tracking-[0.18em] uppercase text-[#b38a4a] border border-stone-200/60 shadow-sm backdrop-blur-sm">
+                      <div className="absolute top-3 left-3 z-10">
+                        <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/95 text-[10px] font-mono font-medium tracking-[0.16em] uppercase text-[#b38a4a] border border-stone-200/80 shadow-xs">
                           {product.badge}
                         </span>
                       </div>
@@ -358,7 +298,7 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
 
                     {/* Rating pill */}
                     {product.rating && (
-                      <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/90 text-xs font-medium text-neutral-800 border border-stone-200/60 shadow-sm backdrop-blur-sm">
+                      <div className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 text-[11px] font-medium text-neutral-800 border border-stone-200/80 shadow-xs">
                         <Star className="w-3 h-3 fill-[#c5a880] text-[#c5a880]" />
                         <span>{product.rating.toFixed(1)}</span>
                       </div>
@@ -367,31 +307,31 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-contain transform transition-transform duration-700 ease-out group-hover:scale-105 select-none pointer-events-none"
+                      className="w-full h-full object-contain transform transition-transform duration-500 ease-out select-none pointer-events-none"
                       loading={idx === 0 ? 'eager' : 'lazy'}
                     />
                   </div>
 
                   {/* Card Content Information */}
-                  <div className="p-5 sm:p-6 space-y-3 bg-white">
+                  <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-white">
                     <div>
-                      <p className="text-[10px] font-mono tracking-[0.24em] uppercase text-stone-500 font-semibold mb-1">
+                      <p className="text-[10px] font-mono tracking-[0.22em] uppercase text-stone-500 font-semibold mb-1">
                         {product.category}
                       </p>
-                      <h3 className="text-lg sm:text-xl font-medium text-neutral-900 tracking-tight leading-snug line-clamp-1">
+                      <h3 className="text-base sm:text-lg font-medium text-neutral-900 tracking-tight leading-snug line-clamp-1">
                         {product.name}
                       </h3>
                       {product.shortDescriptor && (
-                        <p className="text-xs text-neutral-500 font-normal line-clamp-1 mt-0.5">
+                        <p className="text-xs text-neutral-500 font-normal line-clamp-1 mt-1">
                           {product.shortDescriptor}
                         </p>
                       )}
                     </div>
 
                     {/* Price and CTA Button */}
-                    <div className="pt-2 border-t border-stone-100 flex items-center justify-between gap-3">
+                    <div className="pt-3 border-t border-stone-100 flex items-center justify-between gap-2 mt-2">
                       <div>
-                        <span className="text-xs text-neutral-400 block -mb-0.5">Price</span>
+                        <span className="text-[11px] text-neutral-400 block -mb-0.5">Price</span>
                         <span className="text-base sm:text-lg font-semibold text-neutral-950 tracking-tight">
                           {formatPrice(product.price)}
                         </span>
@@ -400,14 +340,14 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
                       {isCenter ? (
                         <Link
                           to={`/product/${product.id}`}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-medium tracking-wide transition-all shadow-sm hover:shadow group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a]"
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-medium tracking-wide transition-all shadow-xs group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a]"
                           aria-label={`View details for ${product.name}`}
                           onClick={(e) => {
                             e.stopPropagation();
                           }}
                         >
                           <span>View Product</span>
-                          <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform text-[#c5a880]" />
+                          <ArrowRight className="w-3 h-3 transform group-hover:translate-x-1 transition-transform text-[#c5a880]" />
                         </Link>
                       ) : (
                         <button
@@ -416,7 +356,7 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
                             e.stopPropagation();
                             goToSlide(idx);
                           }}
-                          className="text-xs font-semibold text-neutral-600 hover:text-neutral-950 transition-colors"
+                          className="text-xs font-semibold text-neutral-700 hover:text-neutral-950 transition-colors py-1 px-2.5 rounded-full bg-stone-100 hover:bg-stone-200"
                         >
                           Focus
                         </button>
@@ -429,16 +369,22 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
           })}
         </div>
 
-        {/* Bottom Pagination Dots & Mobile Nav */}
-        <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Subtle helper hint */}
-          <p className="text-xs text-stone-400 font-normal hidden sm:block">
-            Use arrow keys or swipe to navigate the collection
-          </p>
+        {/* Compact Navigation Controls Below Stage: [ ←  • • ━━━ • •  → ] */}
+        <div className="mt-6 sm:mt-8 flex items-center justify-center gap-6">
+          <button
+            onClick={() => {
+              markUserInteraction();
+              handlePrev();
+            }}
+            className="w-9 h-9 rounded-full border border-stone-200/90 bg-white hover:bg-stone-50 active:scale-95 text-neutral-800 hover:border-[#b38a4a]/50 transition-all flex items-center justify-center shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a]"
+            aria-label="Previous product"
+          >
+            <ChevronLeft className="w-4 h-4 text-neutral-700" />
+          </button>
 
-          {/* Interactive Pagination Dots */}
+          {/* Interactive Pagination Dots: • • ━━━ • • */}
           <div
-            className="flex items-center gap-2"
+            className="flex items-center gap-1.5"
             role="tablist"
             aria-label="Carousel pagination"
           >
@@ -451,22 +397,35 @@ export const ThreeDCoverflowCarousel: React.FC<ThreeDCoverflowCarouselProps> = (
                   aria-selected={isActive}
                   aria-label={`Go to slide ${idx + 1}: ${item.name}`}
                   onClick={() => goToSlide(idx)}
-                  className={`h-2 transition-all duration-300 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a] ${
+                  className={`h-1.5 transition-all duration-300 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a] ${
                     isActive
-                      ? 'w-8 bg-[#b38a4a]'
-                      : 'w-2 bg-stone-300 hover:bg-stone-400'
+                      ? 'w-7 bg-[#b38a4a]'
+                      : 'w-1.5 bg-stone-300 hover:bg-stone-400'
                   }`}
                 />
               );
             })}
           </div>
 
-          {/* Direct Shop Link */}
+          <button
+            onClick={() => {
+              markUserInteraction();
+              handleNext();
+            }}
+            className="w-9 h-9 rounded-full border border-stone-200/90 bg-white hover:bg-stone-50 active:scale-95 text-neutral-800 hover:border-[#b38a4a]/50 transition-all flex items-center justify-center shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b38a4a]"
+            aria-label="Next product"
+          >
+            <ChevronRight className="w-4 h-4 text-neutral-700" />
+          </button>
+        </div>
+
+        {/* View All Products Link */}
+        <div className="mt-4 text-center">
           <Link
             to="/shop"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-900 hover:text-[#b38a4a] transition-colors group"
+            className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-neutral-800 hover:text-[#b38a4a] transition-colors group"
           >
-            <span>View All Archive</span>
+            <span>View All Products</span>
             <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform text-[#b38a4a]" />
           </Link>
         </div>

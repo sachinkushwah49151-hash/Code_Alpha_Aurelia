@@ -39,15 +39,19 @@ export const HeroProductStudio = () => {
       const idleRotZ = Math.sin(elapsed * 0.9) * 1.2;
       const idleRotX = Math.cos(elapsed * 1.1) * 1.5;
 
-      // Cursor target tilt (max 3.5 deg X, 4.5 deg Y)
-      const targetX = (targetRot.current.x * -3.5) + idleRotX;
-      const targetY = (targetRot.current.y * 4.5);
+      // Cursor target tilt (max 3 degrees rotation, max 4px translation)
+      const targetX = (targetRot.current.x * -2.6) + idleRotX * 0.6;
+      const targetY = (targetRot.current.y * 2.8);
+      const targetTransX = targetRot.current.y * 3.8;
+      const targetTransY = (targetRot.current.x * 3.2) + idleFloatY;
 
       // Smooth lerp (linear interpolation) for weighted luxury feel
-      currentRot.current.x += (targetX - currentRot.current.x) * 0.06;
-      currentRot.current.y += (targetY - currentRot.current.y) * 0.06;
-      currentRot.current.z += (idleRotZ - currentRot.current.z) * 0.06;
-      currentRot.current.floatY += (idleFloatY - currentRot.current.floatY) * 0.06;
+      currentRot.current.x += (targetX - currentRot.current.x) * 0.05;
+      currentRot.current.y += (targetY - currentRot.current.y) * 0.05;
+      currentRot.current.z += (idleRotZ * 0.5 - currentRot.current.z) * 0.05;
+      currentRot.current.floatY += (targetTransY - currentRot.current.floatY) * 0.05;
+      if (!currentRot.current.transX) currentRot.current.transX = 0;
+      currentRot.current.transX += (targetTransX - currentRot.current.transX) * 0.05;
 
       const stage = containerRef.current;
       if (stage) {
@@ -58,11 +62,12 @@ export const HeroProductStudio = () => {
         if (productEl) {
           productEl.style.transform = `
             perspective(1200px)
-            translateY(${currentRot.current.floatY}px)
+            translateX(${currentRot.current.transX.toFixed(2)}px)
+            translateY(${currentRot.current.floatY.toFixed(2)}px)
             rotateX(${currentRot.current.x.toFixed(2)}deg)
             rotateY(${currentRot.current.y.toFixed(2)}deg)
             rotateZ(${currentRot.current.z.toFixed(2)}deg)
-            translateZ(15px)
+            translateZ(10px)
           `;
         }
 
@@ -127,7 +132,7 @@ export const HeroProductStudio = () => {
           className="absolute inset-0 rounded-3xl pointer-events-none -z-10"
           style={{
             background:
-              'radial-gradient(ellipse at 50% 45%, rgba(245, 238, 226, 0.85) 0%, rgba(250, 248, 245, 0.4) 60%, transparent 85%)',
+              'radial-gradient(ellipse at 50% 45%, rgba(245, 238, 226, 0.28) 0%, rgba(250, 248, 245, 0.1) 60%, transparent 85%)',
           }}
         />
 
