@@ -36,7 +36,7 @@ export const ProductCard = ({ product }) => {
 
   return (
     <div
-      className="group relative flex flex-col bg-white rounded-2xl border border-stone-200/80 hover:border-stone-400/90 transition-all duration-300 hover:shadow-xl hover:shadow-stone-900/5 overflow-hidden"
+      className="group relative flex flex-col bg-white rounded-2xl border border-stone-200/80 hover:border-stone-400/90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-stone-900/10 overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -83,7 +83,7 @@ export const ProductCard = ({ product }) => {
           alt={product.name}
           loading="lazy"
           onError={() => setImgSrc(DEFAULT_FALLBACK_IMAGE)}
-          className="w-full h-full object-cover object-center transition-all duration-500 ease-out group-hover:scale-106"
+          className="w-full h-full object-cover object-center transition-all duration-500 ease-out group-hover:scale-104"
         />
 
         {/* Quick Add Overlay on desktop hover */}
@@ -131,7 +131,7 @@ export const ProductCard = ({ product }) => {
             to={`/product/${product.id}`}
             className="group-hover:text-neutral-600 transition-colors block"
           >
-            <h3 className="font-medium text-sm sm:text-base text-neutral-900 tracking-tight leading-snug line-clamp-1">
+            <h3 className="font-medium text-[15px] sm:text-[17px] text-neutral-900 tracking-tight leading-snug line-clamp-1">
               {product.name}
             </h3>
           </Link>
@@ -147,7 +147,7 @@ export const ProductCard = ({ product }) => {
         {/* Price & Mobile Quick Add */}
         <div className="flex items-baseline justify-between pt-1 border-t border-stone-100">
           <div className="flex items-baseline gap-2">
-            <span className="text-sm sm:text-base font-semibold text-neutral-950">
+            <span className="text-base sm:text-[17px] font-semibold text-neutral-950">
               {formatPrice(product.price)}
             </span>
             {product.originalPrice > product.price && (

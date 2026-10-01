@@ -38,8 +38,8 @@ export const Navbar = () => {
   }, []);
 
   const navLinkClass = ({ isActive }) =>
-    `text-xs uppercase tracking-[0.16em] font-medium transition-colors hover:text-neutral-950 py-1 ${
-      isActive ? 'text-neutral-950 font-semibold border-b-2 border-[#c5a880]' : 'text-neutral-500'
+    `text-[15px] font-medium tracking-[0.03em] transition-colors hover:text-neutral-950 py-1 ${
+      isActive ? 'text-neutral-950 font-semibold border-b-2 border-[#b38a4a]' : 'text-neutral-600'
     }`;
 
   const handleCartClick = (e) => {
@@ -83,10 +83,10 @@ export const Navbar = () => {
                 <button
                   type="button"
                   onClick={() => setCategoriesDropdownOpen(!categoriesDropdownOpen)}
-                  className="flex items-center gap-1 text-xs uppercase tracking-[0.16em] font-medium text-neutral-500 hover:text-neutral-950 transition-colors py-1 cursor-pointer"
+                  className="flex items-center gap-1.5 text-[15px] font-medium tracking-[0.03em] text-neutral-600 hover:text-neutral-950 transition-colors py-1 cursor-pointer"
                 >
                   Categories
-                  <ChevronDown className="w-3 h-3 text-neutral-400" />
+                  <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
                 </button>
 
                 {categoriesDropdownOpen && (
@@ -117,7 +117,7 @@ export const Navbar = () => {
               </NavLink>
               <a
                 href="/#editorial-story"
-                className="text-xs uppercase tracking-[0.16em] font-medium text-neutral-500 hover:text-neutral-950 transition-colors py-1"
+                className="text-[15px] font-medium tracking-[0.03em] text-neutral-600 hover:text-neutral-950 transition-colors py-1"
               >
                 Editorial
               </a>

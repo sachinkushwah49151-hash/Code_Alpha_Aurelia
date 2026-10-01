@@ -13,6 +13,7 @@ import { PRODUCTS, COVERFLOW_COLLECTION } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
 import { CategoryBentoGrid } from '../components/CategoryBentoGrid';
 import { HeroProductStudio } from '../components/HeroProductStudio';
+import { Background3D } from '../components/Background3D';
 import { ThreeDCoverflowCarousel } from '../components/ui/3-d-coverflow-carousel';
 import { Button } from '../components/Button';
 
@@ -40,22 +41,25 @@ export const Home = () => {
           1. PRODUCT-STUDIO HERO SECTION
       ======================================================== */}
       <section className="relative pt-6 sm:pt-10 lg:pt-14 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Interactive 3D Ambient Background */}
+        <Background3D />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
             {/* Left Column: Editorial Headline & Actions (7 cols) */}
             <div className="lg:col-span-7 space-y-6 sm:space-y-8 z-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100 border border-stone-200/90 text-neutral-800 text-xs font-semibold tracking-wide">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-100/90 border border-stone-200/90 text-neutral-800 text-xs font-semibold tracking-wide backdrop-blur-sm shadow-2xs">
                 <span className="font-bold tracking-[0.2em] text-[#b38a4a] uppercase">AURELIA</span>
                 <span className="text-stone-300">•</span>
                 <span className="text-neutral-600 font-normal">Modern Living Archive</span>
               </div>
 
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight text-neutral-950 leading-[1.08]">
+              <h1 className="text-5xl sm:text-7xl lg:text-[4.75rem] xl:text-[5.35rem] font-light tracking-[-0.03em] text-neutral-950 leading-[1.04]">
                 Curated for the <br />
                 <span className="font-semibold text-neutral-900">way you live.</span>
               </h1>
 
-              <p className="text-base sm:text-lg text-neutral-600 max-w-xl font-normal leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-[1.18rem] text-neutral-600 max-w-2xl font-normal leading-[1.68]">
                 Discover thoughtfully designed products for everyday living. Precision spatial acoustics,
                 ambient illumination, heavyweight organic textiles, and hand-finished leather essentials.
               </p>
@@ -109,7 +113,7 @@ export const Home = () => {
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#b38a4a]">
               Curated Universes
             </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-neutral-950 mt-1">
+            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-light text-neutral-950 mt-1.5 tracking-tight">
               Shop by <span className="font-semibold">Category</span>
             </h2>
           </div>
@@ -135,7 +139,7 @@ export const Home = () => {
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#b38a4a]">
               Permanent Archive
             </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-neutral-950 mt-1">
+            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-light text-neutral-950 mt-1.5 tracking-tight">
               Featured <span className="font-semibold">right now</span>
             </h2>
           </div>
@@ -174,7 +178,7 @@ export const Home = () => {
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#b38a4a]">
               Fresh Off The Line
             </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-neutral-950 mt-1">
+            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-light text-neutral-950 mt-1.5 tracking-tight">
               New <span className="font-semibold">Arrivals</span>
             </h2>
           </div>
@@ -217,7 +221,7 @@ export const Home = () => {
               <span className="text-xs font-mono font-medium tracking-[0.25em] uppercase text-[#c5a880]">
                 Our Design Manifesto
               </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight text-white leading-tight">
+              <h2 className="text-3xl sm:text-5xl lg:text-[3.25rem] font-light tracking-tight text-white leading-tight">
                 Designed for everyday. <br />
                 <span className="font-semibold text-stone-200">Built to endure for decades.</span>
               </h2>

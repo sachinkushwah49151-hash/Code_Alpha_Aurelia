@@ -15,13 +15,13 @@ export const Button = ({
   ...props
 }) => {
   const baseStyles =
-    'relative inline-flex items-center justify-center font-medium tracking-wide transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 cursor-pointer select-none';
+    'relative inline-flex items-center justify-center font-medium tracking-wide transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 hover:-translate-y-[1px] active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 cursor-pointer select-none';
 
   const sizes = {
-    sm: 'text-xs px-3.5 py-1.5 rounded-lg gap-1.5',
-    md: 'text-sm px-5 py-2.5 rounded-lg gap-2',
-    lg: 'text-base px-6 py-3.5 rounded-xl gap-2.5',
-    icon: 'p-2 rounded-lg',
+    sm: 'text-xs px-4 py-2 min-h-[38px] rounded-lg gap-1.5',
+    md: 'text-[14px] sm:text-[15px] px-5 py-2.5 min-h-[46px] rounded-xl gap-2',
+    lg: 'text-[15px] sm:text-base px-7 py-3.5 min-h-[54px] sm:min-h-[56px] rounded-xl gap-2.5',
+    icon: 'p-2.5 rounded-lg min-h-[42px] min-w-[42px]',
   };
 
   const variants = {
