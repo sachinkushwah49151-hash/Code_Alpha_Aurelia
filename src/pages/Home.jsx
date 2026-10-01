@@ -9,11 +9,11 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useDocumentTitle } from '../utils/useDocumentTitle';
-import { PRODUCTS } from '../data/products';
+import { PRODUCTS, COVERFLOW_COLLECTION } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
 import { CategoryBentoGrid } from '../components/CategoryBentoGrid';
 import { HeroProductStudio } from '../components/HeroProductStudio';
-import { FeaturedProductShowcase } from '../components/FeaturedProductShowcase';
+import { ThreeDCoverflowCarousel } from '../components/ui/3-d-coverflow-carousel';
 import { Button } from '../components/Button';
 
 export const Home = () => {
@@ -25,7 +25,6 @@ export const Home = () => {
   // Products for sections
   const featuredProducts = PRODUCTS.filter((p) => p.featured).slice(0, 4);
   const newArrivals = PRODUCTS.filter((p) => p.newArrival).slice(0, 4);
-  const spotlightProduct = PRODUCTS.find((p) => p.id === 'aurelia-air-x1') || PRODUCTS[0];
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -157,9 +156,14 @@ export const Home = () => {
       </section>
 
       {/* ========================================================
-          4. PREMIUM 3D FEATURED PRODUCT PRESENTATION
+          4. 3D COVERFLOW FEATURED COLLECTION (Explore the Collection)
       ======================================================== */}
-      <FeaturedProductShowcase product={spotlightProduct} />
+      <ThreeDCoverflowCarousel
+        items={COVERFLOW_COLLECTION}
+        eyebrow="AURELIA EDIT"
+        title="Explore the Collection"
+        subtitle="Discover pieces designed to fit effortlessly into everyday life."
+      />
 
       {/* ========================================================
           5. NEW ARRIVALS

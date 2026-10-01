@@ -1,8 +1,8 @@
-import { PRODUCTS, CATEGORIES, REVIEWS } from '../data/products';
+import { PRODUCTS, CATEGORIES, REVIEWS, COVERFLOW_COLLECTION } from '../data/products.js';
 
 // Centralized API Base URL configuration
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
-const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
+export const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || 'http://localhost:8000/api';
+const USE_MOCK = typeof import.meta === 'undefined' || import.meta.env?.VITE_USE_MOCK !== 'false';
 
 /**
  * Standard HTTP Client for Django REST Framework
@@ -115,14 +115,36 @@ export const api = {
   async getProductById(id) {
     if (USE_MOCK) {
       await mockDelay(150);
-      const product = PRODUCTS.find((p) => p.id === id);
+      let product = PRODUCTS.find((p) => p.id === id);
+      if (!product && COVERFLOW_COLLECTION) {
+        product = COVERFLOW_COLLECTION.find((p) => p.id === id);
+      }
+      if (!product) {
+        const aliasMap = {
+          'aurelia-studio-one': 'lumen-desk-speaker',
+          'aurelia-arc': 'arc-wireless-keyboard',
+          'aurelia-forma': 'forma-desk-task-lamp',
+          'aurelia-terra': 'terra-travel-carryall',
+          'aurelia-core': 'chronos-minimal-watch',
+        };
+        const fallbackId = aliasMap[id];
+        if (fallbackId) {
+          product = PRODUCTS.find((p) => p.id === fallbackId);
+        }
+      }
+
       if (!product) {
         const error = new Error('Product not found');
         error.status = 404;
         throw error;
       }
-      const reviews = REVIEWS.filter((r) => r.productId === id);
-      const related = PRODUCTS.filter((p) => p.category === product.category && p.id !== id).slice(0, 4);
+      const reviews = REVIEWS.filter((r) => r.productId === id || r.productId === product.id);
+      const related = PRODUCTS.filter(
+        (p) =>
+          (p.category === product.category ||
+            (product.categoryId && p.categoryId === product.categoryId)) &&
+          p.id !== product.id
+      ).slice(0, 4);
 
       return { ...product, reviewsList: reviews, relatedProducts: related };
     }
