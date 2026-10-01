@@ -139,6 +139,12 @@ export const CartProvider = ({ children }) => {
   // Toast notification state
   const [toasts, setToasts] = useState([]);
 
+  // Cart Drawer open state
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+
+  const openCartDrawer = () => setIsCartDrawerOpen(true);
+  const closeCartDrawer = () => setIsCartDrawerOpen(false);
+
   const showToast = (message, type = 'success') => {
     const id = Date.now() + Math.random();
     setToasts((prev) => [...prev, { id, message, type }]);
@@ -206,6 +212,7 @@ export const CartProvider = ({ children }) => {
     });
 
     showToast(`Added ${product.name} to cart`);
+    setIsCartDrawerOpen(true);
   };
 
   const updateQuantity = (cartItemId, newQuantity) => {
@@ -352,6 +359,9 @@ export const CartProvider = ({ children }) => {
         removePromoCode,
         showToast,
         removeToast,
+        isCartDrawerOpen,
+        openCartDrawer,
+        closeCartDrawer,
         login,
         logout,
         updateUserProfile,

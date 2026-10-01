@@ -9,10 +9,14 @@ import {
   Sparkles,
   CheckCircle2,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useDocumentTitle } from '../utils/useDocumentTitle';
-import { PRODUCTS, CATEGORIES } from '../data/products';
+import { PRODUCTS } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
-import { CategoryCard } from '../components/CategoryCard';
+import { CategoryBentoGrid } from '../components/CategoryBentoGrid';
+import { FeaturedShowcase } from '../components/FeaturedShowcase';
+import { Hero3DCanvas } from '../components/3d/Hero3DCanvas';
+import { SpotlightCard } from '../components/SpotlightCard';
 import { Button } from '../components/Button';
 
 export const Home = () => {
@@ -21,7 +25,7 @@ export const Home = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
 
-  // Filter products for sections
+  // Products
   const featuredProducts = PRODUCTS.filter((p) => p.featured).slice(0, 4);
   const newArrivals = PRODUCTS.filter((p) => p.newArrival).slice(0, 4);
 
@@ -34,21 +38,29 @@ export const Home = () => {
   };
 
   return (
-    <div className="flex flex-col gap-16 sm:gap-24 lg:gap-32">
+    <div className="flex flex-col gap-16 sm:gap-24 lg:gap-32 overflow-hidden">
       {/* ========================================================
-          1. HERO SECTION (Asymmetric Editorial Composition)
+          1. SIGNATURE 3D HERO SECTION
       ======================================================== */}
       <section className="relative pt-6 sm:pt-10 lg:pt-16 overflow-hidden">
+        {/* Subtle Ambient Radial Background Glow */}
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-amber-400/5 rounded-full blur-3xl pointer-events-none -z-10" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
             {/* Left Column: Editorial Headline & Actions (7 cols) */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-8 z-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100 border border-stone-200 text-neutral-800 text-xs font-semibold tracking-wide">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:col-span-7 space-y-6 sm:space-y-8 z-10"
+            >
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-100/90 border border-stone-200 text-neutral-800 text-xs font-semibold tracking-wide backdrop-blur-xs">
                 <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                 <span>The 2026 Architectural Essentials Collection</span>
               </div>
 
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight text-neutral-950 leading-[1.08]">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight text-neutral-950 leading-[1.06]">
                 Everything you want. <br />
                 <span className="font-semibold text-neutral-900">Nothing you don&apos;t.</span>
               </h1>
@@ -73,7 +85,7 @@ export const Home = () => {
                 </Link>
               </div>
 
-              {/* Sub-hero Micro Highlights */}
+              {/* Sub-hero Trust Metrics */}
               <div className="pt-6 sm:pt-8 border-t border-stone-200/80 grid grid-cols-3 gap-4 max-w-lg">
                 <div>
                   <p className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">100%</p>
@@ -88,50 +100,42 @@ export const Home = () => {
                   <p className="text-xs text-neutral-500 font-medium mt-0.5">Superfluous Noise</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Right Column: Visual Composition with floating product tag (5 cols) */}
-            <div className="lg:col-span-5 relative">
+            {/* Right Column: Floating 3D Object with Mouse Parallax (5 cols) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:col-span-5 relative"
+            >
               <div className="relative mx-auto max-w-md lg:max-w-none">
-                {/* Background decorative subtle tone */}
-                <div className="absolute -inset-4 bg-stone-200/40 rounded-3xl transform -rotate-2 -z-10" />
+                {/* Background subtle glowing frame */}
+                <div className="absolute -inset-4 bg-gradient-to-tr from-stone-200/50 to-stone-100/40 rounded-3xl transform -rotate-1 -z-10" />
 
-                {/* Main Hero Photo */}
-                <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border border-stone-200/80 bg-stone-100">
-                  <img
-                    src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85"
-                    alt="NOVA Aero X1 Wireless Headphones"
-                    className="w-full h-full object-cover object-center transform hover:scale-103 transition-transform duration-700"
-                  />
-
-                  {/* Floating Tag Overlay */}
-                  <div className="absolute bottom-5 inset-x-5 p-4 rounded-xl bg-white/90 backdrop-blur-md border border-stone-200/90 shadow-lg flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
-                        Spotlight Release
-                      </span>
-                      <p className="text-sm font-semibold text-neutral-900">Aero X1 ANC Headphones</p>
-                      <p className="text-xs text-stone-500">Custom 40mm Beryllium Drivers</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-stone-400 line-through">₹10,999</p>
-                      <p className="text-sm font-bold text-neutral-950">₹8,499</p>
-                    </div>
-                  </div>
+                {/* 3D Hardware Canvas */}
+                <div className="rounded-3xl border border-stone-200/80 bg-gradient-to-b from-white/80 to-stone-100/50 backdrop-blur-md shadow-2xl overflow-hidden">
+                  <Hero3DCanvas />
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* ========================================================
-          2. CATEGORY SECTION
+          2. UPGRADED CATEGORY SECTION (Editorial Bento Grid)
       ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4"
+        >
           <div>
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-stone-500">
+            <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-stone-500">
               Curated Universes
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-neutral-950 mt-1">
@@ -145,23 +149,25 @@ export const Home = () => {
             <span>View All Categories</span>
             <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
           </Link>
-        </div>
+        </motion.div>
 
-        {/* Category Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {CATEGORIES.map((cat) => (
-            <CategoryCard key={cat.id} category={cat} />
-          ))}
-        </div>
+        {/* Bento Grid */}
+        <CategoryBentoGrid />
       </section>
 
       {/* ========================================================
-          3. FEATURED PRODUCTS
+          3. FEATURED PRODUCTS GRID
       ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4"
+        >
           <div>
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-stone-500">
+            <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-stone-500">
               Handpicked Essentials
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-neutral-950 mt-1">
@@ -175,7 +181,7 @@ export const Home = () => {
             <span>Browse Full Catalog</span>
             <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
           </Link>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5 lg:gap-6">
           {featuredProducts.map((product) => (
@@ -185,10 +191,19 @@ export const Home = () => {
       </section>
 
       {/* ========================================================
-          4. EDITORIAL PROMO SECTION (Visual Grid Breaker)
+          4. SECOND MAJOR 3D MOMENT: FEATURED 3D SHOWCASE
       ======================================================== */}
-      <section id="editorial-story" className="w-full bg-neutral-950 text-white overflow-hidden py-16 sm:py-24 my-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <FeaturedShowcase />
+
+      {/* ========================================================
+          5. EDITORIAL PROMO SECTION (Spotlight Card)
+      ======================================================== */}
+      <section id="editorial-story" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <SpotlightCard
+          theme="dark"
+          spotlightColor="rgba(255, 255, 255, 0.07)"
+          className="rounded-3xl bg-neutral-950 text-white border border-neutral-800 shadow-2xl p-8 sm:p-14 lg:p-20"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left: Large Editorial Lifestyle Visual */}
             <div className="lg:col-span-6 relative">
@@ -196,9 +211,9 @@ export const Home = () => {
                 <img
                   src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80"
                   alt="Designed for everyday life"
-                  className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover object-center transform hover:scale-104 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-neutral-900/10" />
+                <div className="absolute inset-0 bg-neutral-950/20" />
               </div>
             </div>
 
@@ -221,7 +236,7 @@ export const Home = () => {
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="bg-white text-neutral-950 hover:bg-stone-100 border-none group"
+                    className="bg-white text-neutral-950 hover:bg-stone-200 border-none group shadow-lg"
                   >
                     <span>Explore Collection</span>
                     <ArrowRight className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" />
@@ -230,16 +245,22 @@ export const Home = () => {
               </div>
             </div>
           </div>
-        </div>
+        </SpotlightCard>
       </section>
 
       {/* ========================================================
-          5. NEW ARRIVALS
+          6. NEW ARRIVALS
       ======================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4"
+        >
           <div>
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-stone-500">
+            <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-stone-500">
               Fresh Off The Line
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-neutral-950 mt-1">
@@ -253,7 +274,7 @@ export const Home = () => {
             <span>View All New Releases</span>
             <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
           </Link>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5 lg:gap-6">
           {newArrivals.map((product) => (
@@ -263,10 +284,10 @@ export const Home = () => {
       </section>
 
       {/* ========================================================
-          6. TRUST / SERVICE SECTION (Subtle & Elegant)
+          7. TRUST / SERVICE SECTION (Subtle & Elegant)
       ======================================================== */}
       <section id="trust-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 p-8 sm:p-12 rounded-2xl bg-white border border-stone-200/80 shadow-sm">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 p-8 sm:p-12 rounded-3xl bg-white border border-stone-200/80 shadow-sm">
           <div className="flex items-start gap-3.5">
             <div className="p-2.5 rounded-xl bg-stone-100 text-neutral-900 shrink-0">
               <Truck className="w-5 h-5" />
@@ -318,10 +339,14 @@ export const Home = () => {
       </section>
 
       {/* ========================================================
-          7. NEWSLETTER SECTION (Minimal)
+          8. NEWSLETTER SECTION (Spotlight CTA Area)
       ======================================================== */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
-        <div className="py-12 px-6 sm:px-12 rounded-3xl bg-stone-100/70 border border-stone-200/80 space-y-4">
+        <SpotlightCard
+          theme="light"
+          spotlightColor="rgba(15, 23, 42, 0.04)"
+          className="py-12 px-6 sm:px-12 rounded-3xl bg-stone-100/80 border border-stone-200/90 space-y-4"
+        >
           <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-neutral-500">
             Private Newsletter
           </span>
@@ -345,7 +370,7 @@ export const Home = () => {
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 placeholder="Enter your email address"
-                className="flex-1 px-4 py-3 rounded-xl bg-white border border-stone-300 text-xs sm:text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                className="flex-1 px-4 py-3 rounded-xl bg-white border border-stone-300 text-xs sm:text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 shadow-xs"
               />
               <Button type="submit" variant="primary" size="md">
                 Subscribe
@@ -356,7 +381,7 @@ export const Home = () => {
           <p className="text-[10px] text-stone-400">
             We value your attention. Unsubscribe with one click anytime.
           </p>
-        </div>
+        </SpotlightCard>
       </section>
     </div>
   );

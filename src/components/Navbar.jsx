@@ -15,7 +15,7 @@ import { SearchModal } from './SearchBar';
 import { CATEGORIES } from '../data/products';
 
 export const Navbar = () => {
-  const { totalItemCount, wishlist, user } = useCart();
+  const { totalItemCount, wishlist, user, openCartDrawer } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
@@ -180,18 +180,19 @@ export const Navbar = () => {
                 )}
               </Link>
 
-              {/* Cart Button */}
-              <Link
-                to="/cart"
-                className="relative flex items-center gap-2 bg-neutral-900 text-white hover:bg-neutral-800 transition-all px-3 py-2 rounded-lg text-xs font-medium cursor-pointer shadow-sm"
-                aria-label="View shopping cart"
+              {/* Cart Button with CartDrawer trigger */}
+              <button
+                type="button"
+                onClick={openCartDrawer}
+                className="relative flex items-center gap-2 bg-neutral-900 text-white hover:bg-neutral-800 transition-all px-3 py-2 rounded-xl text-xs font-medium cursor-pointer shadow-sm hover:scale-[1.02] active:scale-[0.98]"
+                aria-label="View shopping bag"
               >
                 <ShoppingBag className="w-4 h-4" />
-                <span className="hidden xs:inline">Cart</span>
-                <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-white text-neutral-900 text-[10px] font-bold">
+                <span className="hidden xs:inline">Bag</span>
+                <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-white text-neutral-900 text-[10px] font-bold shadow-xs">
                   {totalItemCount}
                 </span>
-              </Link>
+              </button>
             </div>
           </div>
         </div>
