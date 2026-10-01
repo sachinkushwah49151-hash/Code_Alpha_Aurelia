@@ -90,7 +90,7 @@ export const OrderSummary = ({ showCheckoutButton = true, onCheckout, isChecking
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Discount code (e.g. NOVA10)"
+                placeholder="Discount code (e.g. AURELIA10)"
                 value={promoInput}
                 onChange={(e) => {
                   setPromoInput(e.target.value);

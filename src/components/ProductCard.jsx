@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Star, ShoppingBag, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { formatPrice, calculateDiscountPercent } from '../utils/formatters';
 
+// Reliable high-res minimal fallback image
+const DEFAULT_FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=80';
+
 export const ProductCard = ({ product }) => {
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const [isHovered, setIsHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
-  const isWishlisted = isInWishlist(product.id);
+  const [imgSrc, setImgSrc] = useState(product.image);
 
+  const isWishlisted = isInWishlist(product.id);
   const discount = calculateDiscountPercent(product.price, product.originalPrice);
 
   const handleQuickAdd = (e) => {
@@ -17,7 +22,7 @@ export const ProductCard = ({ product }) => {
     e.stopPropagation();
     setIsAdding(true);
     addToCart(product, 1, product.colors ? product.colors[0]?.name : null);
-    setTimeout(() => setIsAdding(false), 800);
+    setTimeout(() => setIsAdding(false), 900);
   };
 
   const handleWishlist = (e) => {
@@ -26,37 +31,43 @@ export const ProductCard = ({ product }) => {
     toggleWishlist(product.id);
   };
 
+  const currentDisplayImage =
+    isHovered && product.secondaryImage ? product.secondaryImage : imgSrc;
+
   return (
-    <div className="group relative flex flex-col bg-white rounded-2xl border border-stone-200/90 hover:border-stone-400 transition-all duration-300 hover:shadow-xl hover:shadow-stone-900/5 overflow-hidden">
-      {/* Top Image Container with 4:5 Aspect Ratio */}
+    <div
+      className="group relative flex flex-col bg-white rounded-2xl border border-stone-200/80 hover:border-stone-400/90 transition-all duration-300 hover:shadow-xl hover:shadow-stone-900/5 overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Top Image Container with 4:5 aspect ratio */}
       <Link
         to={`/product/${product.id}`}
-        className="relative aspect-[4/5] w-full overflow-hidden bg-stone-100 block"
+        className="relative aspect-[4/5] w-full overflow-hidden bg-stone-100/70 block select-none"
       >
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5 items-start">
           {product.badge && (
-            <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-neutral-900 text-white backdrop-blur-md shadow-xs">
+            <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-900/90 text-white backdrop-blur-md shadow-sm">
               {product.badge}
             </span>
           )}
           {discount > 0 && (
-            <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500 text-white shadow-xs">
+            <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#c5a880] text-neutral-950 font-medium shadow-sm">
               {discount}% OFF
             </span>
           )}
         </div>
 
-        {/* Wishlist Button with Motion Spring Pop */}
-        <motion.button
-          whileTap={{ scale: 0.85 }}
+        {/* Wishlist Button with smooth state */}
+        <button
           onClick={handleWishlist}
           type="button"
           aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-          className={`absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs ${
+          className={`absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
             isWishlisted
-              ? 'bg-rose-50 text-rose-600'
-              : 'bg-white/85 text-stone-600 hover:bg-white hover:text-neutral-950 backdrop-blur-xs'
+              ? 'bg-rose-50 text-rose-600 shadow-sm'
+              : 'bg-white/85 text-stone-600 hover:bg-white hover:text-neutral-950 shadow-sm backdrop-blur-sm'
           }`}
         >
           <Heart
@@ -64,38 +75,27 @@ export const ProductCard = ({ product }) => {
               isWishlisted ? 'fill-rose-500 text-rose-500 scale-110' : 'group-hover:scale-105'
             }`}
           />
-        </motion.button>
+        </button>
 
-        {/* Primary Image */}
+        {/* Product Image with smooth 21st.dev reveal hover */}
         <img
-          src={product.image}
+          src={currentDisplayImage}
           alt={product.name}
           loading="lazy"
-          className={`w-full h-full object-cover object-center transition-all duration-700 ease-out group-hover:scale-104 ${
-            product.secondaryImage ? 'group-hover:opacity-0' : ''
-          }`}
+          onError={() => setImgSrc(DEFAULT_FALLBACK_IMAGE)}
+          className="w-full h-full object-cover object-center transition-all duration-500 ease-out group-hover:scale-106"
         />
 
-        {/* Secondary Angle / Lifestyle Image (Smooth Cross-fade Reveal) */}
-        {product.secondaryImage && (
-          <img
-            src={product.secondaryImage}
-            alt={`${product.name} alternate view`}
-            loading="lazy"
-            className="absolute inset-0 w-full h-full object-cover object-center opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out group-hover:scale-104"
-          />
-        )}
-
-        {/* Quick Add Button Reveal on Hover */}
+        {/* Quick Add Overlay on desktop hover */}
         <div className="absolute inset-x-3 bottom-3 z-10 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 hidden sm:block">
           <button
             type="button"
             onClick={handleQuickAdd}
             disabled={isAdding}
-            className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md ${
+            className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-lg ${
               isAdding
                 ? 'bg-emerald-600 text-white'
-                : 'bg-neutral-900/90 hover:bg-neutral-900 text-white backdrop-blur-md'
+                : 'bg-neutral-900/95 hover:bg-neutral-900 text-white backdrop-blur-md'
             }`}
           >
             {isAdding ? (
@@ -116,7 +116,7 @@ export const ProductCard = ({ product }) => {
         <div>
           {/* Category & Rating */}
           <div className="flex items-center justify-between text-xs text-neutral-500 mb-1">
-            <span className="uppercase tracking-widest text-[10px] font-mono text-stone-500">
+            <span className="uppercase tracking-widest text-[10px] font-semibold text-stone-400">
               {product.category}
             </span>
             <div className="flex items-center gap-1 text-stone-700">
@@ -129,7 +129,7 @@ export const ProductCard = ({ product }) => {
           {/* Product Name */}
           <Link
             to={`/product/${product.id}`}
-            className="group-hover:text-neutral-600 transition-colors"
+            className="group-hover:text-neutral-600 transition-colors block"
           >
             <h3 className="font-medium text-sm sm:text-base text-neutral-900 tracking-tight leading-snug line-clamp-1">
               {product.name}
@@ -147,7 +147,7 @@ export const ProductCard = ({ product }) => {
         {/* Price & Mobile Quick Add */}
         <div className="flex items-baseline justify-between pt-1 border-t border-stone-100">
           <div className="flex items-baseline gap-2">
-            <span className="text-sm sm:text-base font-semibold text-neutral-900">
+            <span className="text-sm sm:text-base font-semibold text-neutral-950">
               {formatPrice(product.price)}
             </span>
             {product.originalPrice > product.price && (
@@ -157,12 +157,12 @@ export const ProductCard = ({ product }) => {
             )}
           </div>
 
-          {/* Mobile visible add button */}
+          {/* Mobile visible quick add button */}
           <button
             onClick={handleQuickAdd}
             type="button"
             className="sm:hidden p-1.5 rounded-lg bg-stone-100 text-stone-800 hover:bg-neutral-900 hover:text-white transition-colors cursor-pointer"
-            aria-label="Add to cart"
+            aria-label="Add to bag"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
           </button>

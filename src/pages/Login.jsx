@@ -44,8 +44,8 @@ export const Login = () => {
   };
 
   const fillDemoAccount = () => {
-    setEmail('alex.vance@studio-nova.co');
-    setPassword('nova-demo-password');
+    setEmail('alex.vance@studio-aurelia.co');
+    setPassword('aurelia-demo-password');
     setError('');
   };
 
@@ -57,7 +57,7 @@ export const Login = () => {
           {/* Background image with subtle overlay */}
           <img
             src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=80"
-            alt="NOVA Watch Lifestyle"
+            alt="AURELIA Watch Lifestyle"
             className="absolute inset-0 w-full h-full object-cover object-center opacity-40 mix-blend-luminosity scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-transparent" />
@@ -66,9 +66,9 @@ export const Login = () => {
           <div className="relative z-10">
             <Link to="/" className="inline-flex items-center gap-1.5 focus:outline-none">
               <span className="font-bold text-xl tracking-[0.28em] uppercase text-white">
-                NOVA
+                AURELIA
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-white" />
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
             </Link>
           </div>
 
@@ -94,7 +94,7 @@ export const Login = () => {
                 Welcome Back
               </span>
               <h1 className="text-2xl sm:text-3xl font-light text-neutral-950 mt-1">
-                Sign into <span className="font-semibold">NOVA</span>
+                Sign into <span className="font-semibold">AURELIA</span>
               </h1>
               <p className="text-xs sm:text-sm text-neutral-500 mt-1">
                 Enter your credentials to access your orders and profile.
@@ -128,7 +128,7 @@ export const Login = () => {
                 type="email"
                 required
                 icon={Mail}
-                placeholder="alex.vance@studio-nova.co"
+                placeholder="alex.vance@studio-aurelia.co"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

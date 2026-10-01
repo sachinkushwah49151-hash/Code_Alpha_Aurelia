@@ -4,7 +4,7 @@ const CartContext = createContext(null);
 
 const INITIAL_MOCK_ORDERS = [
   {
-    id: 'NOV-849201',
+    id: 'AUR-849201',
     date: new Date(Date.now() - 3 * 86400000).toISOString(),
     status: 'Delivered',
     total: 8499,
@@ -14,8 +14,8 @@ const INITIAL_MOCK_ORDERS = [
     paymentMethod: 'Credit Card (ending 4242)',
     items: [
       {
-        id: 'aero-x1-headphones',
-        name: 'Aero X1 Wireless Headphones',
+        id: 'aurelia-air-x1',
+        name: 'Aurelia Air X1 Headphones',
         price: 8499,
         quantity: 1,
         color: 'Matte Obsidian',
@@ -32,7 +32,7 @@ const INITIAL_MOCK_ORDERS = [
     },
   },
   {
-    id: 'NOV-728192',
+    id: 'AUR-728192',
     date: new Date(Date.now() - 14 * 86400000).toISOString(),
     status: 'Delivered',
     total: 10498,
@@ -42,8 +42,8 @@ const INITIAL_MOCK_ORDERS = [
     paymentMethod: 'UPI',
     items: [
       {
-        id: 'lumen-desk-task-lamp',
-        name: 'Lumen Minimal Desk Lamp',
+        id: 'forma-desk-task-lamp',
+        name: 'Forma Minimal Desk Lamp',
         price: 4999,
         quantity: 1,
         color: 'Anodized Black',
@@ -70,10 +70,10 @@ const INITIAL_MOCK_ORDERS = [
 ];
 
 export const CartProvider = ({ children }) => {
-  // Cart state persisted to localStorage
+  // Cart state persisted to localStorage (support migration from nova_cart)
   const [cart, setCart] = useState(() => {
     try {
-      const saved = localStorage.getItem('nova_cart');
+      const saved = localStorage.getItem('aurelia_cart') || localStorage.getItem('nova_cart');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -83,23 +83,23 @@ export const CartProvider = ({ children }) => {
   // Wishlist state persisted to localStorage
   const [wishlist, setWishlist] = useState(() => {
     try {
-      const saved = localStorage.getItem('nova_wishlist');
-      return saved ? JSON.parse(saved) : ['aero-x1-headphones', 'chronos-minimal-watch'];
+      const saved = localStorage.getItem('aurelia_wishlist') || localStorage.getItem('nova_wishlist');
+      return saved ? JSON.parse(saved) : ['aurelia-air-x1', 'chronos-minimal-watch'];
     } catch {
-      return ['aero-x1-headphones', 'chronos-minimal-watch'];
+      return ['aurelia-air-x1', 'chronos-minimal-watch'];
     }
   });
 
   // User state
   const [user, setUser] = useState(() => {
     try {
-      const saved = localStorage.getItem('nova_user');
+      const saved = localStorage.getItem('aurelia_user') || localStorage.getItem('nova_user');
       return saved
         ? JSON.parse(saved)
         : {
             id: 'usr_83921',
             name: 'Alex Vance',
-            email: 'alex.vance@studio-nova.co',
+            email: 'alex.vance@studio-aurelia.co',
             phone: '+91 98765 43210',
             memberSince: 'March 2024',
             addresses: [
@@ -124,9 +124,9 @@ export const CartProvider = ({ children }) => {
   // Orders state
   const [orders, setOrders] = useState(() => {
     try {
-      const saved = localStorage.getItem('nova_orders');
+      const saved = localStorage.getItem('aurelia_orders') || localStorage.getItem('nova_orders');
       if (saved) return JSON.parse(saved);
-      localStorage.setItem('nova_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
+      localStorage.setItem('aurelia_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
       return INITIAL_MOCK_ORDERS;
     } catch {
       return INITIAL_MOCK_ORDERS;
@@ -134,16 +134,16 @@ export const CartProvider = ({ children }) => {
   });
 
   // Promo code discount
-  const [appliedPromo, setAppliedPromo] = useState(null); // { code: 'NOVA10', discountPercent: 10 }
+  const [appliedPromo, setAppliedPromo] = useState(null); // { code: 'AURELIA10', discountPercent: 10 }
+
+  // Side Cart Drawer state
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+
+  // Cart item pulse state for micro-interactions
+  const [cartPulse, setCartPulse] = useState(false);
 
   // Toast notification state
   const [toasts, setToasts] = useState([]);
-
-  // Cart Drawer open state
-  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
-
-  const openCartDrawer = () => setIsCartDrawerOpen(true);
-  const closeCartDrawer = () => setIsCartDrawerOpen(false);
 
   const showToast = (message, type = 'success') => {
     const id = Date.now() + Math.random();
@@ -159,31 +159,37 @@ export const CartProvider = ({ children }) => {
 
   // Sync cart to localStorage
   useEffect(() => {
-    localStorage.setItem('nova_cart', JSON.stringify(cart));
+    localStorage.setItem('aurelia_cart', JSON.stringify(cart));
   }, [cart]);
 
   // Sync wishlist to localStorage
   useEffect(() => {
-    localStorage.setItem('nova_wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('aurelia_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
 
   // Sync user to localStorage
   useEffect(() => {
     if (user) {
-      localStorage.setItem('nova_user', JSON.stringify(user));
+      localStorage.setItem('aurelia_user', JSON.stringify(user));
     } else {
-      localStorage.removeItem('nova_user');
-      localStorage.removeItem('nova_auth_token');
+      localStorage.removeItem('aurelia_user');
+      localStorage.removeItem('aurelia_auth_token');
     }
   }, [user]);
 
   // Sync orders to localStorage
   useEffect(() => {
-    localStorage.setItem('nova_orders', JSON.stringify(orders));
+    localStorage.setItem('aurelia_orders', JSON.stringify(orders));
   }, [orders]);
 
+  // Trigger pulse effect
+  const triggerCartPulse = () => {
+    setCartPulse(true);
+    setTimeout(() => setCartPulse(false), 600);
+  };
+
   // CART OPERATIONS
-  const addToCart = (product, quantity = 1, selectedColor = null) => {
+  const addToCart = (product, quantity = 1, selectedColor = null, openDrawer = true) => {
     const color = selectedColor || (product.colors && product.colors[0]?.name) || 'Standard';
     const cartItemId = `${product.id}-${color}`;
 
@@ -211,8 +217,12 @@ export const CartProvider = ({ children }) => {
       ];
     });
 
-    showToast(`Added ${product.name} to cart`);
-    setIsCartDrawerOpen(true);
+    triggerCartPulse();
+    showToast(`Added ${product.name} to bag`);
+
+    if (openDrawer) {
+      setIsCartDrawerOpen(true);
+    }
   };
 
   const updateQuantity = (cartItemId, newQuantity) => {
@@ -229,7 +239,7 @@ export const CartProvider = ({ children }) => {
     const item = cart.find((i) => i.cartItemId === cartItemId);
     setCart((prev) => prev.filter((i) => i.cartItemId !== cartItemId));
     if (item) {
-      showToast(`Removed ${item.name} from cart`, 'info');
+      showToast(`Removed ${item.name} from bag`, 'info');
     }
   };
 
@@ -256,18 +266,18 @@ export const CartProvider = ({ children }) => {
   // PROMO CODES
   const applyPromoCode = (code) => {
     const clean = code.trim().toUpperCase();
-    if (clean === 'NOVA10') {
-      setAppliedPromo({ code: 'NOVA10', discountPercent: 10 });
-      showToast('10% discount promo applied!');
+    if (clean === 'AURELIA10' || clean === 'NOVA10') {
+      setAppliedPromo({ code: clean, discountPercent: 10 });
+      showToast('10% discount privilege applied!');
       return { success: true, message: '10% discount applied!' };
     }
     if (clean === 'FREESHIP') {
       setAppliedPromo({ code: 'FREESHIP', freeShipping: true });
-      showToast('Free shipping promo applied!');
+      showToast('Complimentary shipping applied!');
       return { success: true, message: 'Free shipping applied!' };
     }
-    showToast('Invalid promo code. Try NOVA10', 'error');
-    return { success: false, message: 'Invalid promo code. Try NOVA10' };
+    showToast('Invalid promo code. Try AURELIA10', 'error');
+    return { success: false, message: 'Invalid promo code. Try AURELIA10' };
   };
 
   const removePromoCode = () => {
@@ -288,10 +298,9 @@ export const CartProvider = ({ children }) => {
     ? Math.round((cartSubtotal * appliedPromo.discountPercent) / 100)
     : 0;
 
-  // Estimated GST (18% inclusive in modern luxury e-commerce or itemized)
+  // Estimated GST (18% inclusive)
   const taxableAmount = cartSubtotal - discountAmount;
   const estimatedTax = taxableAmount > 0 ? Math.round(taxableAmount * 0.18) : 0;
-  // Total including tax and shipping
   const cartTotal = Math.max(0, taxableAmount + shippingFee);
 
   // AUTH METHODS
@@ -313,7 +322,7 @@ export const CartProvider = ({ children }) => {
   // ORDER CREATION
   const placeOrder = (orderData) => {
     const newOrder = {
-      id: 'NOV-' + Math.floor(100000 + Math.random() * 900000),
+      id: 'AUR-' + Math.floor(100000 + Math.random() * 900000),
       date: new Date().toISOString(),
       items: [...cart],
       subtotal: cartSubtotal,
@@ -329,7 +338,7 @@ export const CartProvider = ({ children }) => {
     setOrders((prev) => [newOrder, ...prev]);
     clearCart();
     setAppliedPromo(null);
-    showToast(`Order #${newOrder.id} placed successfully!`);
+    showToast(`Order #${newOrder.id} confirmed!`);
     return newOrder;
   };
 
@@ -349,6 +358,9 @@ export const CartProvider = ({ children }) => {
         estimatedTax,
         cartTotal,
         freeShippingThreshold,
+        isCartDrawerOpen,
+        setIsCartDrawerOpen,
+        cartPulse,
         addToCart,
         updateQuantity,
         removeFromCart,
@@ -359,9 +371,6 @@ export const CartProvider = ({ children }) => {
         removePromoCode,
         showToast,
         removeToast,
-        isCartDrawerOpen,
-        openCartDrawer,
-        closeCartDrawer,
         login,
         logout,
         updateUserProfile,

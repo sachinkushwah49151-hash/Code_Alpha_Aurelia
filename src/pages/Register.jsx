@@ -64,7 +64,7 @@ export const Register = () => {
         <div className="relative hidden lg:block lg:col-span-5 bg-neutral-950 p-10 text-white flex flex-col justify-between overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1000&q=80"
-            alt="NOVA Atelier Craft"
+            alt="AURELIA Atelier Craft"
             className="absolute inset-0 w-full h-full object-cover object-center opacity-40 mix-blend-luminosity scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-transparent" />
@@ -73,9 +73,9 @@ export const Register = () => {
           <div className="relative z-10">
             <Link to="/" className="inline-flex items-center gap-1.5 focus:outline-none">
               <span className="font-bold text-xl tracking-[0.28em] uppercase text-white">
-                NOVA
+                AURELIA
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-white" />
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
             </Link>
           </div>
 
@@ -131,7 +131,7 @@ export const Register = () => {
                 type="email"
                 required
                 icon={Mail}
-                placeholder="alex.vance@studio-nova.co"
+                placeholder="alex.vance@studio-aurelia.co"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -167,7 +167,7 @@ export const Register = () => {
                     className="accent-neutral-900 rounded mt-0.5"
                   />
                   <span>
-                    I agree to the NOVA Privacy Policy and acknowledge the 30-day trial terms.
+                    I agree to the AURELIA Privacy Policy and acknowledge the 30-day trial terms.
                   </span>
                 </label>
               </div>

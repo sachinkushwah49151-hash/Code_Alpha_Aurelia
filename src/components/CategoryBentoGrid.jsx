@@ -1,208 +1,76 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { CATEGORIES } from '../data/products';
 
 export const CategoryBentoGrid = () => {
-  const electronics = CATEGORIES.find((c) => c.id === 'electronics');
-  const fashion = CATEGORIES.find((c) => c.id === 'fashion');
-  const home = CATEGORIES.find((c) => c.id === 'home');
-  const accessories = CATEGORIES.find((c) => c.id === 'accessories');
+  // Use first 6 core categories for the Bento layout
+  const bentoCategories = CATEGORIES.slice(0, 6);
+
+  // Bento layout configuration per item index
+  const bentoSpans = [
+    'md:col-span-2 md:row-span-2 h-80 sm:h-96 md:h-[440px]', // 1. Electronics (Large Hero Tile)
+    'md:col-span-1 md:row-span-1 h-64 sm:h-72 md:h-[210px]', // 2. Audio
+    'md:col-span-1 md:row-span-2 h-80 sm:h-96 md:h-[440px]', // 3. Fashion (Tall Portrait Tile)
+    'md:col-span-1 md:row-span-1 h-64 sm:h-72 md:h-[210px]', // 4. Accessories
+    'md:col-span-2 md:row-span-1 h-64 sm:h-72 md:h-[210px]', // 5. Home (Wide Tile)
+    'md:col-span-1 md:row-span-1 h-64 sm:h-72 md:h-[210px]', // 6. Lifestyle
+  ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
-      {/* 1. Large Electronics Block (8 cols on desktop) */}
-      {electronics && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.5 }}
-          className="md:col-span-7 lg:col-span-8 group relative h-80 sm:h-96 rounded-2xl overflow-hidden block bg-neutral-950 border border-stone-200/60 shadow-sm"
-        >
-          <Link to={`/shop?category=${electronics.id}`} className="block w-full h-full">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+      {bentoCategories.map((category, index) => {
+        const spanClass = bentoSpans[index] || 'h-72';
+
+        return (
+          <Link
+            key={category.id}
+            to={`/shop?category=${category.id}`}
+            className={`group relative rounded-2xl overflow-hidden block bg-neutral-900 border border-stone-200/60 shadow-sm ${spanClass}`}
+          >
+            {/* Background Image with Zoom */}
             <img
-              src={electronics.image}
-              alt={electronics.name}
-              className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-104 group-hover:brightness-95"
+              src={category.image}
+              alt={category.name}
+              loading="lazy"
+              className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108 group-hover:brightness-95"
             />
+
+            {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
 
-            <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between z-10">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 rounded-full bg-white/15 text-white backdrop-blur-md border border-white/15">
-                  Flagship Hardware
+            {/* Content overlay */}
+            <div className="absolute inset-0 p-5 sm:p-6 flex flex-col justify-between">
+              {/* Top Item Count Pill */}
+              <div className="self-end">
+                <span className="text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full bg-white/20 text-white backdrop-blur-md border border-white/20">
+                  {category.itemCount}
                 </span>
-                <span className="text-xs text-stone-300 font-medium">{electronics.itemCount}</span>
               </div>
 
+              {/* Bottom Details with smooth hover translation */}
               <div className="transform transition-transform duration-300 group-hover:-translate-y-1">
-                <p className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-1">
-                  Collection 01
+                <p className="text-[10px] sm:text-xs font-medium text-stone-300 uppercase tracking-widest mb-1">
+                  Collection
                 </p>
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
-                      {electronics.name}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-stone-300 mt-1 font-light max-w-md">
-                      {electronics.tagline}
-                    </p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center backdrop-blur-md group-hover:bg-white group-hover:text-neutral-950 transition-all duration-300 shrink-0 ml-4">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-white">
+                    {category.name}
+                  </h3>
+                  <div className="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center backdrop-blur-md group-hover:bg-[#c5a880] group-hover:text-neutral-950 transition-all duration-300 shadow-sm">
                     <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </div>
                 </div>
+                {category.tagline && (
+                  <p className="text-xs text-stone-300 mt-1 line-clamp-1 opacity-90 font-light">
+                    {category.tagline}
+                  </p>
+                )}
               </div>
             </div>
           </Link>
-        </motion.div>
-      )}
-
-      {/* 2. Accessories Block (4 cols on desktop) */}
-      {accessories && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="md:col-span-5 lg:col-span-4 group relative h-80 sm:h-96 rounded-2xl overflow-hidden block bg-neutral-950 border border-stone-200/60 shadow-sm"
-        >
-          <Link to={`/shop?category=${accessories.id}`} className="block w-full h-full">
-            <img
-              src={accessories.image}
-              alt={accessories.name}
-              className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-104 group-hover:brightness-95"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
-
-            <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between z-10">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 rounded-full bg-white/15 text-white backdrop-blur-md border border-white/15">
-                  Essentials
-                </span>
-                <span className="text-xs text-stone-300 font-medium">{accessories.itemCount}</span>
-              </div>
-
-              <div className="transform transition-transform duration-300 group-hover:-translate-y-1">
-                <p className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-1">
-                  Collection 02
-                </p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-light tracking-tight text-white">
-                      {accessories.name}
-                    </h3>
-                    <p className="text-xs text-stone-300 mt-1 font-light line-clamp-1">
-                      {accessories.tagline}
-                    </p>
-                  </div>
-                  <div className="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center backdrop-blur-md group-hover:bg-white group-hover:text-neutral-950 transition-all duration-300 shrink-0 ml-3">
-                    <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </motion.div>
-      )}
-
-      {/* 3. Home Living Block (4 cols on desktop) */}
-      {home && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="md:col-span-5 lg:col-span-4 group relative h-80 sm:h-96 rounded-2xl overflow-hidden block bg-neutral-950 border border-stone-200/60 shadow-sm"
-        >
-          <Link to={`/shop?category=${home.id}`} className="block w-full h-full">
-            <img
-              src={home.image}
-              alt={home.name}
-              className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-104 group-hover:brightness-95"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
-
-            <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between z-10">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 rounded-full bg-white/15 text-white backdrop-blur-md border border-white/15">
-                  Spaces
-                </span>
-                <span className="text-xs text-stone-300 font-medium">{home.itemCount}</span>
-              </div>
-
-              <div className="transform transition-transform duration-300 group-hover:-translate-y-1">
-                <p className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-1">
-                  Collection 03
-                </p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-light tracking-tight text-white">
-                      {home.name}
-                    </h3>
-                    <p className="text-xs text-stone-300 mt-1 font-light line-clamp-1">
-                      {home.tagline}
-                    </p>
-                  </div>
-                  <div className="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center backdrop-blur-md group-hover:bg-white group-hover:text-neutral-950 transition-all duration-300 shrink-0 ml-3">
-                    <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </motion.div>
-      )}
-
-      {/* 4. Large Fashion Block (8 cols on desktop) */}
-      {fashion && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="md:col-span-7 lg:col-span-8 group relative h-80 sm:h-96 rounded-2xl overflow-hidden block bg-neutral-950 border border-stone-200/60 shadow-sm"
-        >
-          <Link to={`/shop?category=${fashion.id}`} className="block w-full h-full">
-            <img
-              src={fashion.image}
-              alt={fashion.name}
-              className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-104 group-hover:brightness-95"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
-
-            <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between z-10">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 rounded-full bg-white/15 text-white backdrop-blur-md border border-white/15">
-                  Organic Tailoring
-                </span>
-                <span className="text-xs text-stone-300 font-medium">{fashion.itemCount}</span>
-              </div>
-
-              <div className="transform transition-transform duration-300 group-hover:-translate-y-1">
-                <p className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-1">
-                  Collection 04
-                </p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
-                      {fashion.name}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-stone-300 mt-1 font-light max-w-md">
-                      {fashion.tagline}
-                    </p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center backdrop-blur-md group-hover:bg-white group-hover:text-neutral-950 transition-all duration-300 shrink-0 ml-4">
-                    <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </motion.div>
-      )}
+        );
+      })}
     </div>
   );
 };

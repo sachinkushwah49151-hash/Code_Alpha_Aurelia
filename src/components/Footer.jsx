@@ -42,17 +42,17 @@ export const Footer = () => {
               to="/"
               className="inline-flex items-center gap-1.5 focus:outline-none"
             >
-              <span className="font-bold text-xl tracking-[0.28em] uppercase text-neutral-950">
-                NOVA
+              <span className="font-bold text-xl tracking-[0.28em] uppercase text-neutral-950 font-serif-or-sans">
+                AURELIA
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-neutral-900" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a880]" />
             </Link>
-            <p className="text-xs sm:text-sm text-neutral-500 max-w-sm leading-relaxed">
-              &ldquo;Everything you want. Nothing you don&apos;t.&rdquo;
+            <p className="text-xs sm:text-sm text-neutral-600 max-w-sm leading-relaxed font-normal">
+              &ldquo;Curated for the way you live.&rdquo;
             </p>
-            <p className="text-xs text-stone-400 max-w-sm leading-relaxed">
-              Engineered with obsessive attention to acoustic purity, architectural lighting,
-              ergonomic utility, and timeless materials.
+            <p className="text-xs text-stone-400 max-w-sm leading-relaxed font-light">
+              Meticulously engineered spatial acoustic hardware, ambient circadian illumination,
+              heavyweight organic textiles, and hand-burnished leather essentials.
             </p>
 
             {/* Socials */}
@@ -99,7 +99,7 @@ export const Footer = () => {
           {/* Shop Column */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
-              Shop
+              Collections
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -109,12 +109,17 @@ export const Footer = () => {
               </li>
               <li>
                 <Link to="/shop?category=electronics" className="hover:text-neutral-950 transition-colors">
-                  Electronics & Audio
+                  Electronics
+                </Link>
+              </li>
+              <li>
+                <Link to="/shop?category=audio" className="hover:text-neutral-950 transition-colors">
+                  Spatial Audio
                 </Link>
               </li>
               <li>
                 <Link to="/shop?category=fashion" className="hover:text-neutral-950 transition-colors">
-                  Fashion & Apparel
+                  Fashion & Tailoring
                 </Link>
               </li>
               <li>
@@ -123,13 +128,8 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/shop?category=accessories" className="hover:text-neutral-950 transition-colors">
-                  Everyday Accessories
-                </Link>
-              </li>
-              <li>
                 <Link to="/shop?sort=newest" className="hover:text-neutral-950 transition-colors flex items-center gap-1">
-                  New Arrivals <span className="text-[10px] text-amber-600 font-semibold">• Fresh</span>
+                  New Releases <span className="text-[10px] text-[#b38a4a] font-semibold">• Fresh</span>
                 </Link>
               </li>
             </ul>
@@ -138,7 +138,7 @@ export const Footer = () => {
           {/* Support Column */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
-              Support
+              Concierge
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -148,22 +148,22 @@ export const Footer = () => {
               </li>
               <li>
                 <a href="#trust-section" className="hover:text-neutral-950 transition-colors">
-                  Shipping & Delivery
+                  Shipping & Dispatch
                 </a>
               </li>
               <li>
                 <a href="#trust-section" className="hover:text-neutral-950 transition-colors">
-                  Returns & Warranty
+                  30-Day Returns & Trial
                 </a>
               </li>
               <li>
-                <a href="mailto:support@studio-nova.co" className="hover:text-neutral-950 transition-colors flex items-center gap-1">
-                  Contact Support <ArrowUpRight className="w-3 h-3 text-stone-400" />
+                <a href="mailto:concierge@studio-aurelia.co" className="hover:text-neutral-950 transition-colors flex items-center gap-1">
+                  Contact Concierge <ArrowUpRight className="w-3 h-3 text-stone-400" />
                 </a>
               </li>
               <li>
                 <Link to="/profile" className="hover:text-neutral-950 transition-colors">
-                  Account Settings
+                  Account Dashboard
                 </Link>
               </li>
             </ul>
@@ -172,7 +172,7 @@ export const Footer = () => {
           {/* Company & Legal */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
-              Company
+              Studio
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -182,17 +182,12 @@ export const Footer = () => {
               </li>
               <li>
                 <a href="#materials" className="hover:text-neutral-950 transition-colors">
-                  Material Standards
+                  Material Honesties
                 </a>
               </li>
               <li>
                 <a href="#sustainability" className="hover:text-neutral-950 transition-colors">
                   Sustainability
-                </a>
-              </li>
-              <li>
-                <a href="#press" className="hover:text-neutral-950 transition-colors">
-                  Editorial Journal
                 </a>
               </li>
             </ul>
@@ -217,10 +212,10 @@ export const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-stone-200/80 bg-stone-50/50 py-6">
+      <div className="border-t border-stone-200/80 bg-[#faf8f5]/60 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-400">
           <div className="flex items-center gap-2">
-            <span>&copy; {new Date().getFullYear()} NOVA Store Inc. All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} AURELIA Store Inc. All rights reserved.</span>
             <span>•</span>
             <span>CodeAlpha Internship Project</span>
           </div>
@@ -228,7 +223,7 @@ export const Footer = () => {
           {/* Payment Badges */}
           <div className="flex items-center gap-3 text-stone-400 font-mono text-[11px]">
             <span className="px-2 py-0.5 rounded border border-stone-200 bg-white">VISA</span>
-            <span className="px-2 py-0.5 rounded border border-stone-200 bg-white">MC</span>
+            <span className="px-2 py-0.5 rounded border border-stone-200 bg-white">MASTERCARD</span>
             <span className="px-2 py-0.5 rounded border border-stone-200 bg-white">UPI</span>
             <span className="px-2 py-0.5 rounded border border-stone-200 bg-white">RUPAY</span>
             <span className="px-2 py-0.5 rounded border border-stone-200 bg-white">NET BANKING</span>

@@ -1,21 +1,24 @@
-# NOVA — Modern E-Commerce Store
+# AURELIA — Curated for the way you live.
 
-> *"Everything you want. Nothing you don't."*
+> *"Curated for the way you live."*
 
-**CodeAlpha Full-Stack E-Commerce Internship Project — Phase 1 Deliverable**
+**CodeAlpha Full-Stack E-Commerce Internship Project — Phase 1 & 1.5 Deliverable**
 
-An exceptionally polished, minimalist, and editorial e-commerce frontend prototype inspired by modern luxury tech brands (Linear, Aesop, Apple, Nothing). Built with React 19, Tailwind CSS v4, React Router 7, and Lucide Icons.
+An exceptionally polished, minimalist, and editorial e-commerce frontend prototype inspired by modern luxury design studios and premium hardware brands (Linear, Aesop, Apple, Nothing, Bang & Olufsen). Built with React 19, Tailwind CSS v4, Three.js, React Router 7, and Lucide Icons.
 
 ---
 
-## 🌟 Visual & Architectural Highlights
+## 🌟 Visual & Architectural Highlights (Phase 1.5 Upgrade)
 
-- **Aesthetic Direction**: High-fashion, modern tech editorial styling with a sophisticated warm off-white canvas (`#faf9f8`), deep obsidian contrast typography, generous whitespace, subtle borders, and smooth micro-interactions.
-- **Product-Focused Design**: Custom 4:5 image proportions, hover transition between primary and secondary product views, animated quick-add, and reactive wishlist hearts.
-- **Asymmetric Editorial Hero**: Clean typographic layout paired with layered product spotlight composition.
-- **Centralized API Architecture**: Decoupled service layer (`src/services/api.js`) with complete endpoint contracts ready for direct Phase 2 Django REST Framework integration without rewriting any UI components.
-- **Persistent State**: Shopping cart, wishlist items, mock user authentication session, and order history persist across browser reloads via `localStorage`.
-- **Zero Broken Assets**: 100% verified Unsplash CDN product and lifestyle imagery with responsive aspect ratio scaling.
+- **New Brand Identity**: Complete rebrand to **AURELIA** with editorial wordmark, warm amber/champagne accents, and refined typography.
+- **Interactive 3D WebGL Hero Canvas**: Custom Three.js floating champagne-lustre torus geometry, inner satin accent ring, orbiting halo bead, and ambient starfield. Responds smoothly to cursor parallax with linear interpolation (`lerp`) and gracefully degrades for mobile screens or users with `prefers-reduced-motion`.
+- **Editorial Category Bento Grid**: 6-tile asymmetric bento showcase spanning Audio, Fashion, Lifestyle, Electronics, Home & Living, and Travel with hover zoom, subtle elevation, and direct catalog filter navigation.
+- **3D Perspective Spotlight Section**: Signature hardware showcase featuring the *Aurelia Air X1* with layered 3D depth tags, active lighting glow, color variant switching, live specifications, and direct add to bag.
+- **Substantially Expanded Catalog**: **32 curated luxury products** across 8 diverse categories (*Electronics, Audio, Fashion, Accessories, Home, Lifestyle, Work & Study, Travel*). Every product has verified Unsplash imagery with secondary hover shots and graceful fallback handlers.
+- **Slide-Over Cart Drawer (`CartDrawer.jsx`)**: Instant slide-out drawer accessible from anywhere on the site with free shipping progress bar (₹5,000 threshold), quantity controls, quick line-item removal, and direct checkout CTA.
+- **Micro-Interactions & Pulse Feedback**: Cart badge pulses when items are added, product cards feature staggered entrance reveals, secondary photo transitions, and instant toast notifications.
+- **Centralized API Architecture**: Decoupled service layer (`src/services/api.js`) with complete endpoint contracts ready for direct Phase 2 Django REST Framework integration without rewriting UI components.
+- **Persistent State**: Shopping cart, wishlist items, mock user authentication session, and order history persist across browser reloads via `localStorage` with backward-compatible migration keys.
 - **Dynamic SEO**: Real-time document title management for all routes (`useDocumentTitle`).
 
 ---
@@ -24,12 +27,12 @@ An exceptionally polished, minimalist, and editorial e-commerce frontend prototy
 
 | Route | Page | Key Features |
 |---|---|---|
-| `/` | **Home** | Asymmetric hero, curated category blocks, "Featured right now" grid, "Designed for everyday" editorial story, new arrivals, service trust metrics, private newsletter signup, comprehensive footer. |
-| `/shop` | **Product Catalog** | Live search, category filtering, price range filters, rating filters, multi-criteria sorting (Price, Newest, Rating, Featured), active filter chips, 4-column responsive grid, empty search state. |
-| `/product/:id` | **Product Details** | Multi-photo interactive gallery, color variant selector, quantity stepper, stock limits, "Add to Cart" + "Buy Now", tech specifications, customer reviews, related items grid. |
-| `/cart` | **Shopping Cart** | Cart items list, line item subtotals, quantity controls, free shipping progress bar, promo code engine (`NOVA10` for 10% off), estimated GST, empty cart state with direct category shortcuts. |
-| `/checkout` | **Checkout UI** | Multi-step contact info, shipping address form with validation, delivery speed selection (Standard Free vs Priority Air ₹299), payment method selector (Cards, UPI, COD), and confirmation modal with generated Order ID. |
-| `/login` | **Sign In** | Split editorial desktop layout with lifestyle imagery, input validation, "Remember terminal", forgot password prompt, and a **1-Click Demo Account Quick Fill** button for instant evaluation. |
+| `/` | **Home** | Interactive 3D WebGL hero, 6-tile Category Bento Grid, "Curated For You" grid, Aurelia Air X1 3D Perspective Spotlight, New Arrivals carousel, Editorial Brand Manifesto, Service Trust highlights, Concierge Newsletter, and comprehensive footer. |
+| `/shop` | **Product Catalog** | 32 products across 8 categories, live real-time search, category filters, price range sliders, rating filters, multi-criteria sorting (Price, Newest, Rating, Featured), active filter pills, responsive 4-column grid, and clean empty search state. |
+| `/product/:id` | **Product Details** | Multi-photo interactive gallery, color variant selector, quantity stepper, stock limits, "Add to Bag" + "Buy Now", tech specifications table, customer reviews, and related items grid. |
+| `/cart` | **Shopping Cart** | Cart items list, line item subtotals, quantity controls, free shipping progress bar, promo code engine (`AURELIA10` for 10% off, `FREESHIP`), estimated GST, and direct catalog shortcuts. |
+| `/checkout` | **Checkout UI** | Multi-step contact info, shipping address form with validation, delivery speed selection (Standard Free vs Priority Air ₹299), payment method selector (Cards, UPI, COD), and confirmation modal with generated Order ID (`AUR-XXXXXX`). |
+| `/login` | **Sign In** | Split editorial desktop layout with lifestyle imagery, input validation, forgot password prompt, and a **1-Click Demo Account Quick Fill** button for instant evaluation. |
 | `/register` | **Registration** | Split layout, full name, email, password strength check, password confirmation matching, and terms acknowledgment. |
 | `/orders` | **My Orders** | Order cards with status badges (`Processing`, `Shipped`, `Delivered`, `Cancelled`), date, item thumbnails, order totals, interactive order fulfillment timeline modal, and mock invoice download. |
 | `/profile` | **User Profile** | Collector profile overview, order statistics, wishlist count, editable personal contact details modal, saved shipping destinations management, and password security modal. |
@@ -39,9 +42,10 @@ An exceptionally polished, minimalist, and editorial e-commerce frontend prototy
 
 ## 🛠️ Tech Stack
 
-### Frontend (Phase 1)
+### Frontend (Phase 1 & 1.5)
 - **Framework**: [React 19](https://react.dev/)
 - **Bundler**: [Vite 8](https://vitejs.dev/)
+- **3D Graphics**: [Three.js](https://threejs.org/) (Custom WebGL canvas with resource disposal & fallback)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with `@tailwindcss/vite`
 - **Routing**: [React Router 7](https://reactrouter.com/)
 - **Icons**: [Lucide React](https://lucide.dev/)
@@ -65,20 +69,24 @@ An exceptionally polished, minimalist, and editorial e-commerce frontend prototy
 Code_Alpha/
 ├── .env                         # Active environment configuration
 ├── .env.example                 # Example configuration template
-├── index.html                   # HTML entry with Plus Jakarta Sans & SEO meta
+├── index.html                   # HTML entry with Plus Jakarta Sans & AURELIA branding
 ├── package.json                 # Project dependencies & scripts
 ├── vite.config.js               # Vite config with React & Tailwind v4 plugins
 │
 └── src/
-    ├── assets/                  # Static assets & brand vectors
+    ├── assets/                  # Brand vectors and icons
     │
     ├── components/              # Modular, reusable UI components
     │   ├── Badge.jsx            # Pill badge with neutral, emerald, amber variants
     │   ├── Button.jsx           # Button with primary, secondary, outline & loading spinner
+    │   ├── CartDrawer.jsx       # Slide-over cart drawer with free-shipping bar & checkout CTA
     │   ├── CartItem.jsx         # Line item card with thumbnail, variant & stepper
+    │   ├── CategoryBentoGrid.jsx# 6-tile editorial Bento Grid for core categories
     │   ├── CategoryCard.jsx     # Image-led category block with zoom & overlay
+    │   ├── FeaturedProductShowcase.jsx # 3D perspective spotlight card for Aurelia Air X1
     │   ├── FilterPanel.jsx      # Multi-criteria filter sidebar & drawer
-    │   ├── Footer.jsx           # 4-column footer with SVGs & accepted payments
+    │   ├── Footer.jsx           # 4-column footer with studio links & accepted payments
+    │   ├── Hero3DCanvas.jsx     # Interactive Three.js WebGL canvas with cursor parallax
     │   ├── Input.jsx            # Accessible form input with floating label & error state
     │   ├── LoadingState.jsx     # Shimmering card skeleton loaders & spinners
     │   ├── Modal.jsx            # Accessible dialog modal with ESC listener & blur
@@ -90,13 +98,13 @@ Code_Alpha/
     │   └── ToastContainer.jsx   # Non-blocking animated toast notifications
     │
     ├── context/
-    │   └── CartContext.jsx      # Global state: cart, wishlist, orders, user, toasts
+    │   └── CartContext.jsx      # Global state: cart, drawer, wishlist, orders, user, toasts
     │
     ├── data/
-    │   └── products.js          # Curated dataset of 16 products & categories
+    │   └── products.js          # Curated dataset of 32 luxury products across 8 categories
     │
     ├── pages/                   # Application route views
-    │   ├── Home.jsx             # Visual centerpiece homepage
+    │   ├── Home.jsx             # Centerpiece homepage with 3D hero, Bento & spotlight
     │   ├── Shop.jsx             # Filterable product catalog
     │   ├── ProductDetails.jsx   # Product page with gallery, specs & reviews
     │   ├── Cart.jsx             # Shopping cart view
@@ -119,7 +127,7 @@ Code_Alpha/
 
 ## ⚙️ Environment Variables
 
-Create a `.env` file in the root directory (already generated from `.env.example`):
+Create a `.env` file in the root directory (already configured):
 
 ```bash
 # Centralized API endpoint for Django REST Framework
@@ -186,9 +194,13 @@ The frontend API service layer (`src/services/api.js`) is specifically structure
 
 ## 🧪 Interactive Demo Features to Test
 
-1. **Global Search**: Click the magnifying glass in the navbar or press `/` on your keyboard to test real-time product suggestions.
-2. **Promotional Discounts**: In the Shopping Cart or Checkout, apply promo code `NOVA10` to receive a 10% discount, or `FREESHIP` for complimentary delivery.
-3. **Wishlist**: Click the heart on any product card to toggle wishlist status; notice the indicator badge on the desktop navbar.
-4. **1-Click Sign In**: On the `/login` page, click **"1-Click Quick Fill"** to populate demo user credentials (`alex.vance@studio-nova.co`) and enter the profile dashboard.
-5. **Checkout & Order Creation**: Complete checkout with either Card, UPI, or Cash on Delivery to see the order confirmation modal with a generated reference number and instant reflection in `/orders`.
-6. **Responsive Drawer**: Shrink your browser window to test the mobile slide-out navigation drawer with categories and quick search.
+1. **3D WebGL Canvas**: Move your mouse across the Hero section on the homepage to observe the floating geometric torus and particle field tilt in 3D perspective with soft ambient lighting.
+2. **Category Bento Grid**: Explore the 6-tile bento grid directly below the hero and click any category to filter the catalog.
+3. **3D Featured Product Spotlight**: Scroll to the *Aurelia Air X1* showcase on the homepage, test color switcher buttons, and add to bag directly.
+4. **Slide-Over Cart Drawer**: Click the bag icon in the navbar or click "Add to Bag" on any card to see the animated slide-over drawer with free shipping progress bar.
+5. **Global Search**: Click the magnifying glass in the navbar or press `/` on your keyboard to test real-time product suggestions across all 32 items.
+6. **Promotional Discounts**: In the Cart Drawer or Checkout, apply promo code `AURELIA10` to receive a 10% discount, or `FREESHIP` for complimentary delivery.
+7. **Wishlist**: Click the heart on any product card to toggle wishlist status; notice the indicator badge on the desktop navbar.
+8. **1-Click Sign In**: On the `/login` page, click **"1-Click Quick Fill"** to populate demo user credentials (`alex.vance@studio-aurelia.co`) and enter the profile dashboard.
+9. **Checkout & Order Creation**: Complete checkout with either Card, UPI, or Cash on Delivery to see the order confirmation modal with a generated reference number (`AUR-XXXXXX`) and instant reflection in `/orders`.
+10. **Responsive Design**: Test on mobile viewports to inspect the slide-out navigation drawer, touch-friendly touch targets, and optimized layouts.

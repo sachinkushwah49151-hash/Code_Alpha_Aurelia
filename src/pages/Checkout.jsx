@@ -8,10 +8,7 @@ import {
   ShoppingBag,
   Smartphone,
   Wallet,
-  Copy,
-  Check,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useDocumentTitle } from '../utils/useDocumentTitle';
 import { useCart } from '../context/CartContext';
 import { Input } from '../components/Input';
@@ -45,7 +42,6 @@ export const Checkout = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [placedOrderInfo, setPlacedOrderInfo] = useState(null);
-  const [copied, setCopied] = useState(false);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -525,22 +521,17 @@ export const Checkout = () => {
         <Modal
           isOpen={true}
           onClose={() => navigate('/orders')}
-          title="Order confirmed."
+          title="Order Confirmed"
           subtitle={`Reference ID: #${placedOrderInfo.id}`}
         >
           <div className="space-y-6 text-center py-4">
-            <motion.div
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-              className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-inner"
-            >
+            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-8 h-8" />
-            </motion.div>
+            </div>
 
             <div className="space-y-2">
-              <h3 className="text-2xl font-light text-neutral-950">
-                Order <span className="font-semibold">confirmed.</span>
+              <h3 className="text-xl font-bold text-neutral-950">
+                Thank you for your acquisition.
               </h3>
               <p className="text-xs sm:text-sm text-neutral-600 max-w-md mx-auto leading-relaxed">
                 Your order is currently being prepared with obsessive care at our fulfillment depot.
@@ -550,47 +541,22 @@ export const Checkout = () => {
             </div>
 
             {/* Order snapshot summary */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-stone-50 border border-stone-200 text-left text-xs space-y-3 max-w-md mx-auto">
-              <div className="flex justify-between items-center pb-2 border-b border-stone-200/60">
-                <span className="text-neutral-500">Order ID:</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    navigator.clipboard?.writeText(placedOrderInfo.id);
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
-                  }}
-                  className="font-mono font-bold text-neutral-900 flex items-center gap-1.5 hover:text-neutral-700 transition-colors cursor-pointer"
-                  title="Click to copy Order ID"
-                >
-                  <span>#{placedOrderInfo.id}</span>
-                  {copied ? (
-                    <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  ) : (
-                    <Copy className="w-3.5 h-3.5 text-neutral-400" />
-                  )}
-                </button>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-neutral-500">Estimated Delivery:</span>
-                <span className="font-semibold text-emerald-700">
-                  {deliveryMethod === 'express' ? 'Tomorrow, Guaranteed' : 'Within 3 - 5 business days'}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
+            <div className="p-4 rounded-xl bg-stone-50 border border-stone-200 text-left text-xs space-y-2 max-w-md mx-auto">
+              <div className="flex justify-between">
                 <span className="text-neutral-500">Order Total:</span>
-                <span className="font-bold text-neutral-900 text-sm">
+                <span className="font-bold text-neutral-900">
                   {formatPrice(placedOrderInfo.total)}
                 </span>
               </div>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between">
                 <span className="text-neutral-500">Payment:</span>
                 <span className="font-medium text-neutral-900">{placedOrderInfo.paymentMethod}</span>
               </div>
-              <div className="flex justify-between items-start pt-1 border-t border-stone-200/60">
-                <span className="text-neutral-500">Destination:</span>
-                <span className="font-medium text-neutral-900 text-right truncate max-w-[220px]">
-                  {placedOrderInfo.shippingAddress?.fullName}, {placedOrderInfo.shippingAddress?.city}
+              <div className="flex justify-between">
+                <span className="text-neutral-500">Shipping To:</span>
+                <span className="font-medium text-neutral-900 truncate max-w-[200px]">
+                  {placedOrderInfo.shippingAddress?.fullName},{' '}
+                  {placedOrderInfo.shippingAddress?.city}
                 </span>
               </div>
             </div>
@@ -600,16 +566,15 @@ export const Checkout = () => {
                 variant="primary"
                 fullWidth
                 onClick={() => navigate('/orders')}
-                className="shadow-md"
               >
-                View Order
+                Track in My Orders
               </Button>
               <Button
                 variant="outline"
                 fullWidth
                 onClick={() => navigate('/shop')}
               >
-                Continue Shopping
+                Continue Browsing
               </Button>
             </div>
           </div>

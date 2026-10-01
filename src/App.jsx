@@ -50,8 +50,8 @@ export function App() {
       </main>
 
       <Footer />
-      <ToastContainer />
       <CartDrawer />
+      <ToastContainer />
     </div>
   );
 }

@@ -4,9 +4,9 @@ export const useDocumentTitle = (title) => {
   useEffect(() => {
     const prevTitle = document.title;
     if (title) {
-      document.title = `${title} — NOVA`;
+      document.title = `${title} — AURELIA`;
     } else {
-      document.title = 'NOVA — Modern E-Commerce';
+      document.title = 'AURELIA — Curated for the way you live.';
     }
     return () => {
       document.title = prevTitle;

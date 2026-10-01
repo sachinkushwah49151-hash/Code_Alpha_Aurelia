@@ -9,7 +9,7 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
  * Attaches Authorization header if JWT token is stored.
  */
 async function request(endpoint, options = {}) {
-  const token = localStorage.getItem('nova_auth_token');
+  const token = localStorage.getItem('aurelia_auth_token') || localStorage.getItem('nova_auth_token');
   const headers = {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -160,8 +160,8 @@ export const api = {
             },
           ],
         };
-        const mockToken = 'mock_jwt_token_nova_secure_' + Date.now();
-        localStorage.setItem('nova_auth_token', mockToken);
+        const mockToken = 'mock_jwt_token_aurelia_secure_' + Date.now();
+        localStorage.setItem('aurelia_auth_token', mockToken);
         return { user: mockUser, token: mockToken };
       }
       throw new Error('Please provide a valid email and password');
@@ -172,7 +172,7 @@ export const api = {
       body: JSON.stringify(credentials),
     });
     if (data.token) {
-      localStorage.setItem('nova_auth_token', data.token);
+      localStorage.setItem('aurelia_auth_token', data.token);
     }
     return data;
   },
@@ -182,14 +182,14 @@ export const api = {
       await mockDelay(350);
       const mockUser = {
         id: 'usr_' + Date.now(),
-        name: userData.fullName || userData.name || 'Nova Member',
+        name: userData.fullName || userData.name || 'Aurelia Member',
         email: userData.email,
         phone: userData.phone || '+91 98765 00000',
         memberSince: 'Just now',
         addresses: [],
       };
-      const mockToken = 'mock_jwt_token_nova_secure_' + Date.now();
-      localStorage.setItem('nova_auth_token', mockToken);
+      const mockToken = 'mock_jwt_token_aurelia_secure_' + Date.now();
+      localStorage.setItem('aurelia_auth_token', mockToken);
       return { user: mockUser, token: mockToken };
     }
 
@@ -198,7 +198,7 @@ export const api = {
       body: JSON.stringify(userData),
     });
     if (data.token) {
-      localStorage.setItem('nova_auth_token', data.token);
+      localStorage.setItem('aurelia_auth_token', data.token);
     }
     return data;
   },
@@ -207,7 +207,9 @@ export const api = {
   async getOrders() {
     if (USE_MOCK) {
       await mockDelay(200);
-      const localOrders = JSON.parse(localStorage.getItem('nova_orders') || '[]');
+      const localOrders = JSON.parse(
+        localStorage.getItem('aurelia_orders') || localStorage.getItem('nova_orders') || '[]'
+      );
       return localOrders;
     }
 
@@ -218,7 +220,7 @@ export const api = {
     if (USE_MOCK) {
       await mockDelay(400);
       const newOrder = {
-        id: 'NOV-' + Math.floor(100000 + Math.random() * 900000),
+        id: 'AUR-' + Math.floor(100000 + Math.random() * 900000),
         date: new Date().toISOString(),
         items: orderData.items,
         subtotal: orderData.subtotal,
@@ -230,9 +232,11 @@ export const api = {
         paymentMethod: orderData.paymentMethod || 'Credit Card',
       };
 
-      const existingOrders = JSON.parse(localStorage.getItem('nova_orders') || '[]');
+      const existingOrders = JSON.parse(
+        localStorage.getItem('aurelia_orders') || localStorage.getItem('nova_orders') || '[]'
+      );
       const updatedOrders = [newOrder, ...existingOrders];
-      localStorage.setItem('nova_orders', JSON.stringify(updatedOrders));
+      localStorage.setItem('aurelia_orders', JSON.stringify(updatedOrders));
 
       return newOrder;
     }

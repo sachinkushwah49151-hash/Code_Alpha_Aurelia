@@ -12,7 +12,6 @@ import {
   ShoppingBag,
   ArrowRight,
   ChevronRight,
-  Box,
 } from 'lucide-react';
 import { useDocumentTitle } from '../utils/useDocumentTitle';
 import { api } from '../services/api';
@@ -21,8 +20,6 @@ import { formatPrice, calculateDiscountPercent } from '../utils/formatters';
 import { Button } from '../components/Button';
 import { ProductCard } from '../components/ProductCard';
 import { LoadingSpinner } from '../components/LoadingState';
-import { Modal } from '../components/Modal';
-import { Product3DViewer } from '../components/3d/Product3DViewer';
 
 export const ProductDetails = () => {
   const { id } = useParams();
@@ -36,7 +33,6 @@ export const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('specs'); // 'specs' | 'features' | 'shipping'
   const [isAdding, setIsAdding] = useState(false);
-  const [is3DModalOpen, setIs3DModalOpen] = useState(false);
 
   useDocumentTitle(product ? product.name : 'Product Details');
 
@@ -131,18 +127,57 @@ export const ProductDetails = () => {
       </nav>
 
       {/* Main Two-Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-        {/* LEFT COLUMN: Desktop Thumbnail Column + Main Image (7 cols on lg) */}
-        <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-4 items-start">
-          {/* Vertical Thumbnail Column on md+ */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        {/* LEFT COLUMN: Gallery (7 cols on lg) */}
+        <div className="lg:col-span-7 space-y-4">
+          {/* Main Hero Image */}
+          <div className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] w-full rounded-2xl overflow-hidden bg-stone-100 border border-stone-200/80 shadow-sm">
+            <img
+              src={selectedImage || product.image}
+              alt={product.name}
+              className="w-full h-full object-cover object-center transition-all duration-500"
+            />
+
+            {/* Badges */}
+            <div className="absolute top-4 left-4 flex flex-col gap-2">
+              {product.badge && (
+                <span className="text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded bg-neutral-900 text-white backdrop-blur-md shadow-sm">
+                  {product.badge}
+                </span>
+              )}
+              {discount > 0 && (
+                <span className="text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded bg-amber-500 text-white shadow-sm">
+                  Save {discount}%
+                </span>
+              )}
+            </div>
+
+            {/* Floating Wishlist Button */}
+            <button
+              type="button"
+              onClick={() => toggleWishlist(product.id)}
+              className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-md backdrop-blur-sm ${
+                isWishlisted
+                  ? 'bg-rose-50 text-rose-600'
+                  : 'bg-white/90 text-stone-600 hover:text-neutral-900 hover:bg-white'
+              }`}
+              aria-label="Toggle wishlist"
+            >
+              <Heart
+                className={`w-5 h-5 ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`}
+              />
+            </button>
+          </div>
+
+          {/* Thumbnail Gallery Strip */}
           {galleryImages.length > 1 && (
-            <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-[540px] pb-2 md:pb-0 scrollbar-none shrink-0 w-full md:w-24">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
               {galleryImages.map((img, idx) => (
                 <button
                   key={idx}
                   type="button"
                   onClick={() => setSelectedImage(img)}
-                  className={`relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 bg-stone-100 ${
+                  className={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 bg-stone-100 ${
                     selectedImage === img
                       ? 'border-neutral-900 shadow-sm ring-1 ring-neutral-900'
                       : 'border-transparent hover:border-stone-300 opacity-70 hover:opacity-100'
@@ -157,57 +192,6 @@ export const ProductDetails = () => {
               ))}
             </div>
           )}
-
-          {/* Main Hero Image */}
-          <div className="relative aspect-[4/5] w-full rounded-3xl overflow-hidden bg-stone-100 border border-stone-200/80 shadow-sm group">
-            <img
-              src={selectedImage || product.image}
-              alt={product.name}
-              className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-104"
-            />
-
-            {/* Badges */}
-            <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
-              {product.badge && (
-                <span className="text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-md bg-neutral-900 text-white backdrop-blur-md shadow-xs">
-                  {product.badge}
-                </span>
-              )}
-              {discount > 0 && (
-                <span className="text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-md bg-amber-500 text-white shadow-xs">
-                  Save {discount}%
-                </span>
-              )}
-            </div>
-
-            {/* Top Right Actions: Wishlist + 3D View Button */}
-            <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
-              <button
-                type="button"
-                onClick={() => setIs3DModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 text-neutral-900 hover:bg-neutral-900 hover:text-white backdrop-blur-md border border-stone-200 shadow-sm text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer"
-                title="Inspect in 3D Studio"
-              >
-                <Box className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">View in 3D</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => toggleWishlist(product.id)}
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm backdrop-blur-md ${
-                  isWishlisted
-                    ? 'bg-rose-50 text-rose-600'
-                    : 'bg-white/90 text-stone-600 hover:text-neutral-900 hover:bg-white'
-                }`}
-                aria-label="Toggle wishlist"
-              >
-                <Heart
-                  className={`w-4 h-4 ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`}
-                />
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* RIGHT COLUMN: Product Details & Purchase Form (5 cols on lg) */}
@@ -449,7 +433,7 @@ export const ProductDetails = () => {
                 major Indian metropolitan hubs.
               </p>
               <p>
-                We offer a 30-day trial period on all NOVA hardware and accessories. If the product
+                We offer a 30-day trial period on all AURELIA hardware and accessories. If the product
                 does not meet your exacting standards, initiate a return from your Account Dashboard
                 for a complimentary courier doorstep collection and full refund.
               </p>
@@ -537,54 +521,6 @@ export const ProductDetails = () => {
           </div>
         </div>
       )}
-
-      {/* 3D Studio Inspection Modal */}
-      <Modal
-        isOpen={is3DModalOpen}
-        onClose={() => setIs3DModalOpen(false)}
-        title="3D Studio Inspection"
-        subtitle={`Interactive 360° tactile review • ${product.name}`}
-        maxWidth="max-w-3xl"
-      >
-        <div className="space-y-4">
-          <div className="rounded-2xl bg-stone-100/70 border border-stone-200 overflow-hidden">
-            <Product3DViewer
-              finishColor={
-                product.colors?.find((c) => c.name === selectedColor)?.hex || '#1c1c1e'
-              }
-              autoRotate={true}
-              interactive={true}
-              className="h-80 sm:h-96 w-full"
-            />
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 text-xs">
-            <p className="text-stone-500">
-              Active Finish: <span className="font-semibold text-neutral-900">{selectedColor}</span>
-            </p>
-            <div className="flex gap-2 w-full sm:w-auto">
-              <Button
-                variant="primary"
-                size="sm"
-                fullWidth={false}
-                onClick={() => {
-                  handleAddToCart();
-                  setIs3DModalOpen(false);
-                }}
-              >
-                Add {selectedColor} to Bag
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIs3DModalOpen(false)}
-              >
-                Close Studio
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 };
