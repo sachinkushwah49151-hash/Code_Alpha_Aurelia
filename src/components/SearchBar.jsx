@@ -14,7 +14,7 @@ export const SearchModal = ({ isOpen, onClose }) => {
       setTimeout(() => inputRef.current?.focus(), 50);
       document.body.style.overflow = 'hidden';
     } else {
-      setQuery('');
+      setQuery((prev) => (prev ? '' : prev));
       document.body.style.overflow = 'unset';
     }
   }, [isOpen]);

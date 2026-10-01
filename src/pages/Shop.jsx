@@ -23,6 +23,7 @@ export const Shop = () => {
   const category = searchParams.get('category') || 'all';
   const searchQuery = searchParams.get('search') || '';
   const sort = searchParams.get('sort') || 'featured';
+  const inStock = searchParams.get('inStock') === 'true';
 
   // Filter states
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
@@ -44,6 +45,7 @@ export const Shop = () => {
       priceMin: priceRange.min || undefined,
       priceMax: priceRange.max || undefined,
       rating: minRating || undefined,
+      inStockOnly: inStock || undefined,
     };
 
     api
@@ -62,9 +64,10 @@ export const Shop = () => {
     return () => {
       isMounted = false;
     };
-  }, [category, searchQuery, priceRange, minRating, sort]);
+  }, [category, searchQuery, priceRange, minRating, sort, inStock]);
 
   const hasActiveFilters =
+    inStock ||
     category !== 'all' ||
     searchQuery.trim() !== '' ||
     priceRange.min !== '' ||
@@ -77,6 +80,17 @@ export const Shop = () => {
     setPriceRange({ min: '', max: '' });
     setMinRating('');
     setSearchParams({});
+  };
+
+  const handleInStockChange = (newInStock) => {
+    setIsLoading(true);
+    const newParams = new URLSearchParams(searchParams);
+    if (newInStock) {
+      newParams.set('inStock', 'true');
+    } else {
+      newParams.delete('inStock');
+    }
+    setSearchParams(newParams);
   };
 
   const handleRemoveSearch = () => {
@@ -101,7 +115,7 @@ export const Shop = () => {
 
   // Sync local searchTerm when URL changes
   useEffect(() => {
-    setSearchTerm(searchQuery);
+    setSearchTerm((prev) => (prev !== searchQuery ? searchQuery : prev));
   }, [searchQuery]);
 
   const handleSearchSubmit = (e) => {

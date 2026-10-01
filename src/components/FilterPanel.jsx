@@ -1,6 +1,6 @@
 import React from 'react';
 import { CATEGORIES } from '../data/products';
-import { X, RotateCcw, Check, Star } from 'lucide-react';
+import { RotateCcw, Check } from 'lucide-react';
 
 export const FilterPanel = ({
   category,
@@ -9,8 +9,8 @@ export const FilterPanel = ({
   setPriceRange,
   minRating,
   setMinRating,
-  sort,
-  setSort,
+  inStockOnly = false,
+  setInStockOnly = () => {},
   onReset,
   hasActiveFilters,
   className = '',
@@ -141,6 +141,39 @@ export const FilterPanel = ({
               </button>
             );
           })}
+        </div>
+      </div>
+
+      {/* Availability Filter */}
+      <div>
+        <h4 className="text-xs font-semibold text-neutral-800 uppercase tracking-wider mb-2.5">
+          Availability
+        </h4>
+        <div className="space-y-1">
+          <button
+            type="button"
+            onClick={() => setInStockOnly(false)}
+            className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
+              !inStockOnly
+                ? 'bg-neutral-900 text-white font-medium'
+                : 'text-neutral-600 hover:bg-stone-100 hover:text-neutral-900'
+            }`}
+          >
+            <span>All Items</span>
+            {!inStockOnly && <Check className="w-3.5 h-3.5" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => setInStockOnly(true)}
+            className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
+              inStockOnly
+                ? 'bg-neutral-900 text-white font-medium'
+                : 'text-neutral-600 hover:bg-stone-100 hover:text-neutral-900'
+            }`}
+          >
+            <span>In Stock Only</span>
+            {inStockOnly && <Check className="w-3.5 h-3.5" />}
+          </button>
         </div>
       </div>
     </div>

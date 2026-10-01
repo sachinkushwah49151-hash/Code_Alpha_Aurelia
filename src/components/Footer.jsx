@@ -30,6 +30,8 @@ const LinkedinIcon = () => (
   </svg>
 );
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export const Footer = () => {
   return (
     <footer className="bg-white border-t border-stone-200 text-neutral-600 mt-20">
@@ -215,7 +217,7 @@ export const Footer = () => {
       <div className="border-t border-stone-200/80 bg-[#faf8f5]/60 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-400">
           <div className="flex items-center gap-2">
-            <span>&copy; {new Date().getFullYear()} AURELIA Store Inc. All rights reserved.</span>
+            <span>&copy; {CURRENT_YEAR} AURELIA Store Inc. All rights reserved.</span>
             <span>•</span>
             <span>CodeAlpha Internship Project</span>
           </div>

@@ -24,8 +24,8 @@ export const Navbar = () => {
 
   // Close menus on route change
   useEffect(() => {
-    setMobileMenuOpen(false);
-    setCategoriesDropdownOpen(false);
+    setMobileMenuOpen((prev) => (prev ? false : prev));
+    setCategoriesDropdownOpen((prev) => (prev ? false : prev));
   }, [location.pathname]);
 
   // Handle scroll effect

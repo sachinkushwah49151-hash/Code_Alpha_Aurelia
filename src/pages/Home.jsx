@@ -6,14 +6,13 @@ import {
   Truck,
   RefreshCw,
   Headphones,
-  Sparkles,
   CheckCircle2,
 } from 'lucide-react';
 import { useDocumentTitle } from '../utils/useDocumentTitle';
 import { PRODUCTS } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
 import { CategoryBentoGrid } from '../components/CategoryBentoGrid';
-import { Hero3DCanvas } from '../components/Hero3DCanvas';
+import { HeroProductStudio } from '../components/HeroProductStudio';
 import { FeaturedProductShowcase } from '../components/FeaturedProductShowcase';
 import { Button } from '../components/Button';
 
@@ -39,7 +38,7 @@ export const Home = () => {
   return (
     <div className="flex flex-col gap-16 sm:gap-24 lg:gap-32">
       {/* ========================================================
-          1. 3D-ENHANCED HERO SECTION
+          1. PRODUCT-STUDIO HERO SECTION
       ======================================================== */}
       <section className="relative pt-6 sm:pt-10 lg:pt-14 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,8 +46,9 @@ export const Home = () => {
             {/* Left Column: Editorial Headline & Actions (7 cols) */}
             <div className="lg:col-span-7 space-y-6 sm:space-y-8 z-10">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100 border border-stone-200/90 text-neutral-800 text-xs font-semibold tracking-wide">
-                <Sparkles className="w-3.5 h-3.5 text-[#b38a4a]" />
-                <span>The 2026 Architectural Essentials Collection</span>
+                <span className="font-bold tracking-[0.2em] text-[#b38a4a] uppercase">AURELIA</span>
+                <span className="text-stone-300">•</span>
+                <span className="text-neutral-600 font-normal">Modern Living Archive</span>
               </div>
 
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight text-neutral-950 leading-[1.08]">
@@ -57,8 +57,8 @@ export const Home = () => {
               </h1>
 
               <p className="text-base sm:text-lg text-neutral-600 max-w-xl font-normal leading-relaxed">
-                AURELIA crafts spatial acoustic hardware, ambient circadian illumination,
-                heavyweight organic textiles, and hand-finished leather goods. Stripped of noise.
+                Discover thoughtfully designed products for everyday living. Precision spatial acoustics,
+                ambient illumination, heavyweight organic textiles, and hand-finished leather essentials.
               </p>
 
               {/* CTAs */}
@@ -71,7 +71,7 @@ export const Home = () => {
                 </Link>
                 <Link to="/shop?sort=newest">
                   <Button variant="outline" size="lg">
-                    Explore New Releases
+                    Explore New Arrivals
                   </Button>
                 </Link>
               </div>
@@ -93,27 +93,9 @@ export const Home = () => {
               </div>
             </div>
 
-            {/* Right Column: 3D WebGL Canvas Layer with Floating Product Tag (5 cols) */}
+            {/* Right Column: Premium Realistic Product Presentation (5 cols) */}
             <div className="lg:col-span-5 relative flex items-center justify-center">
-              <div className="relative w-full max-w-md lg:max-w-none aspect-[4/5] rounded-3xl overflow-hidden bg-gradient-to-tr from-stone-100 via-stone-50 to-white border border-stone-200/90 shadow-2xl flex items-center justify-center">
-                {/* 3D Interactive WebGL Canvas */}
-                <Hero3DCanvas />
-
-                {/* Floating Spotlight Card Overlay */}
-                <div className="absolute bottom-5 inset-x-5 p-4 rounded-2xl bg-white/92 backdrop-blur-md border border-stone-200/90 shadow-xl flex items-center justify-between z-20">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#b38a4a] block">
-                      Spotlight Object
-                    </span>
-                    <p className="text-sm font-semibold text-neutral-950">Aurelia Air X1 Headphone</p>
-                    <p className="text-xs text-stone-500">40mm Custom Beryllium Audio</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-stone-400 line-through">₹10,999</p>
-                    <p className="text-sm font-bold text-neutral-950">₹8,499</p>
-                  </div>
-                </div>
-              </div>
+              <HeroProductStudio />
             </div>
           </div>
         </div>

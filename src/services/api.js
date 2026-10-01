@@ -48,7 +48,7 @@ export const api = {
       await mockDelay(180);
       let filtered = [...PRODUCTS];
 
-      const { category, search, sort, priceMin, priceMax, rating, featured, newArrival } = params;
+      const { category, search, sort, priceMin, priceMax, rating, inStockOnly, featured, newArrival } = params;
 
       if (category && category !== 'all') {
         filtered = filtered.filter(
@@ -77,6 +77,10 @@ export const api = {
 
       if (rating !== undefined && rating !== '') {
         filtered = filtered.filter((p) => p.rating >= Number(rating));
+      }
+
+      if (inStockOnly) {
+        filtered = filtered.filter((p) => p.stock > 0);
       }
 
       if (featured) {

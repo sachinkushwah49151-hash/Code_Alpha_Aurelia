@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, ArrowLeft, ArrowRight, ShieldCheck, Trash2 } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
 import { useDocumentTitle } from '../utils/useDocumentTitle';
 import { useCart } from '../context/CartContext';
 import { CartItem } from '../components/CartItem';

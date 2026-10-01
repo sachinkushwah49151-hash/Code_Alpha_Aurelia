@@ -33,6 +33,20 @@ export const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('specs'); // 'specs' | 'features' | 'shipping'
   const [isAdding, setIsAdding] = useState(false);
+  const [imageTilt, setImageTilt] = useState({ x: 0, y: 0 });
+  const [isZooming, setIsZooming] = useState(false);
+
+  const handleImageMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    setImageTilt({ x: y * -4, y: x * 5 });
+  };
+
+  const handleImageMouseLeave = () => {
+    setImageTilt({ x: 0, y: 0 });
+    setIsZooming(false);
+  };
 
   useDocumentTitle(product ? product.name : 'Product Details');
 
@@ -130,16 +144,30 @@ export const ProductDetails = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
         {/* LEFT COLUMN: Gallery (7 cols on lg) */}
         <div className="lg:col-span-7 space-y-4">
-          {/* Main Hero Image */}
-          <div className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] w-full rounded-2xl overflow-hidden bg-stone-100 border border-stone-200/80 shadow-sm">
-            <img
-              src={selectedImage || product.image}
-              alt={product.name}
-              className="w-full h-full object-cover object-center transition-all duration-500"
-            />
+          {/* Main Hero Image with subtle 2.5D perspective tilt */}
+          <div
+            onMouseMove={handleImageMouseMove}
+            onMouseEnter={() => setIsZooming(true)}
+            onMouseLeave={handleImageMouseLeave}
+            className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] w-full rounded-2xl overflow-hidden bg-stone-100 border border-stone-200/80 shadow-sm cursor-crosshair select-none"
+            style={{ perspective: '1000px' }}
+          >
+            <div
+              className="w-full h-full flex items-center justify-center transition-transform duration-150 ease-out will-change-transform"
+              style={{
+                transform: `rotateX(${imageTilt.x}deg) rotateY(${imageTilt.y}deg) scale(${isZooming ? 1.04 : 1})`,
+                transformStyle: 'preserve-3d',
+              }}
+            >
+              <img
+                src={selectedImage || product.image}
+                alt={product.name}
+                className="w-full h-full object-cover object-center pointer-events-none"
+              />
+            </div>
 
             {/* Badges */}
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
+            <div className="absolute top-4 left-4 flex flex-col gap-2 z-10 pointer-events-none">
               {product.badge && (
                 <span className="text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded bg-neutral-900 text-white backdrop-blur-md shadow-sm">
                   {product.badge}
@@ -156,7 +184,7 @@ export const ProductDetails = () => {
             <button
               type="button"
               onClick={() => toggleWishlist(product.id)}
-              className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-md backdrop-blur-sm ${
+              className={`absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-md backdrop-blur-sm ${
                 isWishlisted
                   ? 'bg-rose-50 text-rose-600'
                   : 'bg-white/90 text-stone-600 hover:text-neutral-900 hover:bg-white'
