@@ -19,7 +19,7 @@ const INITIAL_MOCK_ORDERS = [
         price: 8499,
         quantity: 1,
         color: 'Matte Obsidian',
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=80',
+        image: '/images/aurelia-air-x1.jpg',
       },
     ],
     shippingAddress: {
@@ -35,27 +35,27 @@ const INITIAL_MOCK_ORDERS = [
     id: 'AUR-728192',
     date: new Date(Date.now() - 14 * 86400000).toISOString(),
     status: 'Delivered',
-    total: 10498,
-    subtotal: 10498,
+    total: 9098,
+    subtotal: 9098,
     shipping: 0,
     tax: 0,
     paymentMethod: 'UPI',
     items: [
       {
-        id: 'forma-desk-task-lamp',
-        name: 'Forma Minimal Desk Lamp',
-        price: 4999,
+        id: 'aurelia-forma',
+        name: 'Aurelia Forma Desk Lamp',
+        price: 4299,
         quantity: 1,
-        color: 'Anodized Black',
-        image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1000&q=80',
+        color: 'Matte Graphite',
+        image: '/images/aurelia-forma.jpg',
       },
       {
-        id: 'horizon-polarized-sunglasses',
-        name: 'Horizon Minimal Eyewear',
-        price: 5499,
+        id: 'horizon-sunglasses',
+        name: 'Horizon Minimal Sunglasses',
+        price: 4799,
         quantity: 1,
-        color: 'Matte Gunmetal',
-        image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=1000&q=80',
+        color: 'Champagne Gold',
+        image: '/images/horizon-sunglasses.jpg',
       },
     ],
     shippingAddress: {
@@ -84,9 +84,9 @@ export const CartProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(() => {
     try {
       const saved = localStorage.getItem('aurelia_wishlist') || localStorage.getItem('nova_wishlist');
-      return saved ? JSON.parse(saved) : ['aurelia-air-x1', 'chronos-minimal-watch'];
+      return saved ? JSON.parse(saved) : ['aurelia-air-x1', 'aurelia-core'];
     } catch {
-      return ['aurelia-air-x1', 'chronos-minimal-watch'];
+      return ['aurelia-air-x1', 'aurelia-core'];
     }
   });
 

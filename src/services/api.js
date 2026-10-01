@@ -1,4 +1,4 @@
-import { PRODUCTS, CATEGORIES, REVIEWS, COVERFLOW_COLLECTION } from '../data/products.js';
+import { PRODUCTS, CATEGORIES, REVIEWS } from '../data/products.js';
 
 // Centralized API Base URL configuration
 export const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || 'http://localhost:8000/api';
@@ -116,20 +116,21 @@ export const api = {
     if (USE_MOCK) {
       await mockDelay(150);
       let product = PRODUCTS.find((p) => p.id === id);
-      if (!product && COVERFLOW_COLLECTION) {
-        product = COVERFLOW_COLLECTION.find((p) => p.id === id);
-      }
       if (!product) {
         const aliasMap = {
-          'aurelia-studio-one': 'lumen-desk-speaker',
-          'aurelia-arc': 'arc-wireless-keyboard',
-          'aurelia-forma': 'forma-desk-task-lamp',
-          'aurelia-terra': 'terra-travel-carryall',
-          'aurelia-core': 'chronos-minimal-watch',
+          'lumen-desk-speaker': 'aurelia-studio-one',
+          'arc-wireless-keyboard': 'aurelia-arc',
+          'forma-desk-task-lamp': 'aurelia-forma',
+          'terra-travel-carryall': 'aurelia-terra',
+          'chronos-minimal-watch': 'aurelia-core',
+          'aurelia-everyday-leather-wallet': 'atelier-leather-wallet',
+          'horizon-polarized-sunglasses': 'horizon-sunglasses',
+          'apex-stainless-thermal-flask': 'apex-thermal-flask',
+          'kyoto-scented-soy-candle': 'kyoto-hinoki-candle',
         };
-        const fallbackId = aliasMap[id];
-        if (fallbackId) {
-          product = PRODUCTS.find((p) => p.id === fallbackId);
+        const canonicalId = aliasMap[id];
+        if (canonicalId) {
+          product = PRODUCTS.find((p) => p.id === canonicalId);
         }
       }
 
@@ -138,7 +139,7 @@ export const api = {
         error.status = 404;
         throw error;
       }
-      const reviews = REVIEWS.filter((r) => r.productId === id || r.productId === product.id);
+      const reviews = REVIEWS.filter((r) => r.productId === product.id);
       const related = PRODUCTS.filter(
         (p) =>
           (p.category === product.category ||

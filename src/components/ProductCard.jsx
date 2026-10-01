@@ -4,9 +4,9 @@ import { Heart, Star, ShoppingBag, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPrice, calculateDiscountPercent } from '../utils/formatters';
 
-// Reliable high-res minimal fallback image
+// Reliable neutral minimal fallback image (never substitutes unrelated product photos)
 const DEFAULT_FALLBACK_IMAGE =
-  'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=80';
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='750' viewBox='0 0 600 750'%3E%3Crect width='600' height='750' fill='%23f5f3ef'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui, sans-serif' font-size='14' font-weight='600' fill='%23b38a4a' letter-spacing='0.2em'%3EAURELIA%3C/text%3E%3C/svg%3E";
 
 export const ProductCard = ({ product }) => {
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
