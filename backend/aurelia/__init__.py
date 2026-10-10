@@ -1,0 +1,1 @@
+# aurelia Django project package

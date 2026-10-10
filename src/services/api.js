@@ -1,12 +1,26 @@
 import { PRODUCTS, CATEGORIES, REVIEWS } from '../data/products.js';
 
 // Centralized API Base URL configuration
-export const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || 'http://localhost:8000/api';
-const USE_MOCK = typeof import.meta === 'undefined' || import.meta.env?.VITE_USE_MOCK !== 'false';
+const envBaseUrl =
+  typeof import.meta !== 'undefined'
+    ? import.meta.env?.VITE_API_BASE_URL || import.meta.env?.VITE_API_URL
+    : null;
+
+// In production (Vite build served by Django on same host), default to relative '/api'
+// In development, default to 'http://127.0.0.1:8000/api'
+const defaultBaseUrl =
+  typeof import.meta !== 'undefined' && import.meta.env?.PROD
+    ? '/api'
+    : 'http://127.0.0.1:8000/api';
+
+export const API_BASE_URL = (envBaseUrl || defaultBaseUrl).replace(/\/+$/, '');
+export const USE_MOCK =
+  typeof import.meta !== 'undefined' && import.meta.env?.VITE_USE_MOCK === 'true';
 
 /**
  * Standard HTTP Client for Django REST Framework
  * Attaches Authorization header if JWT token is stored.
+ * Never silently falls back to mock data if the API fails.
  */
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem('aurelia_auth_token') || localStorage.getItem('nova_auth_token');
@@ -16,16 +30,55 @@ async function request(endpoint, options = {}) {
     ...options.headers,
   };
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  let response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}${cleanEndpoint}`, {
+      ...options,
+      headers,
+    });
+  } catch (netErr) {
+    const error = new Error(
+      `Cannot connect to backend server at ${API_BASE_URL}. Ensure the Django backend is running.`
+    );
+    error.status = 0;
+    error.originalError = netErr;
+    throw error;
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    const error = new Error(errorData.detail || errorData.message || 'API request failed');
+    let message = errorData.detail || errorData.message;
+
+    if (!message) {
+      if (typeof errorData === 'object' && Object.keys(errorData).length > 0) {
+        const firstKey = Object.keys(errorData)[0];
+        const val = errorData[firstKey];
+        if (Array.isArray(val)) {
+          message = typeof val[0] === 'object' ? Object.values(val[0]).flat().join(', ') : val.join(', ');
+        } else if (typeof val === 'string') {
+          message = val;
+        } else {
+          message = JSON.stringify(errorData);
+        }
+      } else {
+        message = `API request failed with status ${response.status}`;
+      }
+    }
+
+    const error = new Error(message);
     error.status = response.status;
     error.data = errorData;
+
+    // Clean up expired session if backend returns 401 Unauthorized
+    if (response.status === 401 && token) {
+      localStorage.removeItem('aurelia_auth_token');
+      localStorage.removeItem('nova_auth_token');
+      localStorage.removeItem('aurelia_user');
+      localStorage.removeItem('nova_user');
+    }
+
     throw error;
   }
 
@@ -33,7 +86,7 @@ async function request(endpoint, options = {}) {
 }
 
 /**
- * Simulated delay for mock responses to feel organic and test loading states
+ * Simulated delay for mock responses only if explicitly enabled
  */
 const mockDelay = (ms = 200) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -91,7 +144,6 @@ export const api = {
         filtered = filtered.filter((p) => p.newArrival);
       }
 
-      // Sorting
       if (sort === 'price-low') {
         filtered.sort((a, b) => a.price - b.price);
       } else if (sort === 'price-high') {
@@ -101,14 +153,20 @@ export const api = {
       } else if (sort === 'rating') {
         filtered.sort((a, b) => b.rating - a.rating);
       } else {
-        // default: featured first
         filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
       }
 
       return { count: filtered.length, results: filtered };
     }
 
-    const queryParams = new URLSearchParams(params).toString();
+    const cleanParams = {};
+    Object.entries(params).forEach(([key, val]) => {
+      if (val !== undefined && val !== null && val !== '') {
+        cleanParams[key] = val;
+      }
+    });
+
+    const queryParams = new URLSearchParams(cleanParams).toString();
     return request(`/products/${queryParams ? `?${queryParams}` : ''}`);
   },
 
@@ -150,7 +208,7 @@ export const api = {
       return { ...product, reviewsList: reviews, relatedProducts: related };
     }
 
-    return request(`/products/${id}/`);
+    return request(`/products/${encodeURIComponent(id)}/`);
   },
 
   async getCategories() {
@@ -173,22 +231,11 @@ export const api = {
           email: credentials.email,
           phone: '+91 98765 43210',
           memberSince: 'March 2024',
-          addresses: [
-            {
-              id: 'addr_1',
-              title: 'Home',
-              name: 'Alex Vance',
-              street: '42 Lotus Boulevard, Apt 8B',
-              city: 'Bengaluru',
-              state: 'Karnataka',
-              postalCode: '560103',
-              country: 'India',
-              isDefault: true,
-            },
-          ],
+          addresses: [],
         };
         const mockToken = 'mock_jwt_token_aurelia_secure_' + Date.now();
         localStorage.setItem('aurelia_auth_token', mockToken);
+        localStorage.setItem('aurelia_user', JSON.stringify(mockUser));
         return { user: mockUser, token: mockToken };
       }
       throw new Error('Please provide a valid email and password');
@@ -200,6 +247,9 @@ export const api = {
     });
     if (data.token) {
       localStorage.setItem('aurelia_auth_token', data.token);
+    }
+    if (data.user) {
+      localStorage.setItem('aurelia_user', JSON.stringify(data.user));
     }
     return data;
   },
@@ -217,6 +267,7 @@ export const api = {
       };
       const mockToken = 'mock_jwt_token_aurelia_secure_' + Date.now();
       localStorage.setItem('aurelia_auth_token', mockToken);
+      localStorage.setItem('aurelia_user', JSON.stringify(mockUser));
       return { user: mockUser, token: mockToken };
     }
 
@@ -227,20 +278,37 @@ export const api = {
     if (data.token) {
       localStorage.setItem('aurelia_auth_token', data.token);
     }
+    if (data.user) {
+      localStorage.setItem('aurelia_user', JSON.stringify(data.user));
+    }
     return data;
+  },
+
+  async getMe() {
+    return request('/auth/me/');
+  },
+
+  logout() {
+    localStorage.removeItem('aurelia_auth_token');
+    localStorage.removeItem('nova_auth_token');
+    localStorage.removeItem('aurelia_user');
+    localStorage.removeItem('nova_user');
   },
 
   // ORDERS
   async getOrders() {
     if (USE_MOCK) {
       await mockDelay(200);
-      const localOrders = JSON.parse(
+      return JSON.parse(
         localStorage.getItem('aurelia_orders') || localStorage.getItem('nova_orders') || '[]'
       );
-      return localOrders;
     }
 
     return request('/orders/');
+  },
+
+  async getOrderById(id) {
+    return request(`/orders/${encodeURIComponent(id)}/`);
   },
 
   async createOrder(orderData) {
@@ -268,9 +336,22 @@ export const api = {
       return newOrder;
     }
 
+    const cleanItems = (orderData.items || []).map((item) => ({
+      id: item.id,
+      quantity: Number(item.quantity) || 1,
+      color: item.color || '',
+    }));
+
+    const payload = {
+      items: cleanItems,
+      shippingAddress: orderData.shippingAddress || {},
+      paymentMethod: orderData.paymentMethod || 'Credit Card',
+      deliveryMethod: orderData.deliveryMethod || 'standard',
+    };
+
     return request('/orders/', {
       method: 'POST',
-      body: JSON.stringify(orderData),
+      body: JSON.stringify(payload),
     });
   },
 };

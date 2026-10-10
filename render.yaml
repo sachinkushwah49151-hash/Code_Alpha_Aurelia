@@ -1,0 +1,40 @@
+# =====================================================================
+# Render Infrastructure Blueprint — AURELIA Full-Stack E-Commerce
+# Single Web Service (React Vite + Django REST + WhiteNoise) + PostgreSQL
+# =====================================================================
+services:
+  - type: web
+    name: aurelia-ecommerce
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn --chdir backend aurelia.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: aurelia-db
+          property: connectionString
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://aurelia-ecommerce.onrender.com"
+      - key: VITE_API_BASE_URL
+        value: "/api"
+      - key: VITE_USE_MOCK
+        value: "false"
+
+databases:
+  - name: aurelia-db
+    databaseName: aurelia
+    user: aurelia_user
+    plan: free
+    region: oregon

@@ -15,10 +15,31 @@ import { Modal } from '../components/Modal';
 
 export const Orders = () => {
   useDocumentTitle('My Orders');
-  const { orders } = useCart();
+  const { orders, user, ordersLoading } = useCart();
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all'); // 'all' | 'processing' | 'delivered'
+
+  if (!user) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-24 text-center space-y-4">
+        <div className="w-16 h-16 rounded-2xl bg-stone-100 text-stone-500 flex items-center justify-center mx-auto">
+          <Package className="w-8 h-8" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-neutral-900">Sign in Required</h2>
+          <p className="text-xs sm:text-sm text-neutral-500 mt-1">
+            Please sign in to view your verified orders archive and dispatch tracking.
+          </p>
+        </div>
+        <div className="pt-2">
+          <Link to="/login">
+            <Button variant="primary">Sign In</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const filteredOrders = orders.filter((order) => {
     if (filterStatus === 'all') return true;

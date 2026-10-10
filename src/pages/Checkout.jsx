@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   CreditCard,
@@ -35,6 +35,19 @@ export const Checkout = () => {
     country: 'India',
   });
 
+  // Keep form data populated if user identity is confirmed asynchronously
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        email: prev.email || user.email || '',
+        phone: prev.phone || user.phone || '',
+        firstName: prev.firstName || (user.name ? user.name.split(' ')[0] : ''),
+        lastName: prev.lastName || (user.name ? user.name.split(' ').slice(1).join(' ') : ''),
+      }));
+    }
+  }, [user]);
+
   const [deliveryMethod, setDeliveryMethod] = useState('standard'); // 'standard' | 'express'
   const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' | 'upi' | 'cod'
   const [upiId, setUpiId] = useState('');
@@ -69,19 +82,32 @@ export const Checkout = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handlePlaceOrder = (e) => {
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setErrors((prev) => ({ ...prev, form: '' }));
+
     if (!validate()) {
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+      return;
+    }
+
+    const token = localStorage.getItem('aurelia_auth_token') || localStorage.getItem('nova_auth_token');
+    if (!token) {
+      setErrors((prev) => ({
+        ...prev,
+        form: 'Please sign in to complete checkout. Orders are saved to your verified member account.',
+      }));
       window.scrollTo({ top: 120, behavior: 'smooth' });
       return;
     }
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    try {
       const orderPayload = {
         shippingAddress: {
-          fullName: `${formData.firstName} ${formData.lastName}`,
+          fullName: `${formData.firstName} ${formData.lastName}`.trim(),
           street: formData.apartment ? `${formData.address}, ${formData.apartment}` : formData.address,
           city: formData.city,
           state: formData.state,
@@ -98,10 +124,18 @@ export const Checkout = () => {
         deliveryMethod,
       };
 
-      const completedOrder = placeOrder(orderPayload);
-      setIsSubmitting(false);
+      const completedOrder = await placeOrder(orderPayload);
       setPlacedOrderInfo(completedOrder);
-    }, 1000);
+    } catch (err) {
+      console.error('Checkout failed:', err);
+      setErrors((prev) => ({
+        ...prev,
+        form: err.message || 'Order creation failed. Please check your cart and try again.',
+      }));
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (cart.length === 0 && !placedOrderInfo) {
@@ -134,6 +168,12 @@ export const Checkout = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
         {/* LEFT COLUMN: Checkout Form (7 cols) */}
         <form onSubmit={handlePlaceOrder} className="lg:col-span-7 space-y-8">
+          {errors.form && (
+            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm font-medium">
+              {errors.form}
+            </div>
+          )}
+
           {/* Step 1: Contact Information */}
           <div className="bg-white rounded-2xl border border-stone-200/90 p-5 sm:p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-stone-100 pb-3">

@@ -7,10 +7,40 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node dependencies and build
 node_modules
 dist
 dist-ssr
 *.local
+
+# Environment variables & secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+backend/venv/
+backend/__pycache__/
+backend/*/__pycache__/
+backend/*/*/__pycache__/
+
+# Database
+*.sqlite3
+backend/db.sqlite3
+
+# Static collected files
+staticfiles/
+backend/staticfiles/
 
 # Editor directories and files
 .vscode/*

@@ -1,73 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { api } from '../services/api';
 
 const CartContext = createContext(null);
-
-const INITIAL_MOCK_ORDERS = [
-  {
-    id: 'AUR-849201',
-    date: new Date(Date.now() - 3 * 86400000).toISOString(),
-    status: 'Delivered',
-    total: 8499,
-    subtotal: 8499,
-    shipping: 0,
-    tax: 0,
-    paymentMethod: 'Credit Card (ending 4242)',
-    items: [
-      {
-        id: 'aurelia-air-x1',
-        name: 'Aurelia Air X1 Headphones',
-        price: 8499,
-        quantity: 1,
-        color: 'Matte Obsidian',
-        image: '/images/aurelia-air-x1.jpg',
-      },
-    ],
-    shippingAddress: {
-      fullName: 'Alex Vance',
-      street: '42 Lotus Boulevard, Apt 8B',
-      city: 'Bengaluru',
-      state: 'Karnataka',
-      postalCode: '560103',
-      country: 'India',
-    },
-  },
-  {
-    id: 'AUR-728192',
-    date: new Date(Date.now() - 14 * 86400000).toISOString(),
-    status: 'Delivered',
-    total: 9098,
-    subtotal: 9098,
-    shipping: 0,
-    tax: 0,
-    paymentMethod: 'UPI',
-    items: [
-      {
-        id: 'aurelia-forma',
-        name: 'Aurelia Forma Desk Lamp',
-        price: 4299,
-        quantity: 1,
-        color: 'Matte Graphite',
-        image: '/images/aurelia-forma.jpg',
-      },
-      {
-        id: 'horizon-sunglasses',
-        name: 'Horizon Minimal Sunglasses',
-        price: 4799,
-        quantity: 1,
-        color: 'Champagne Gold',
-        image: '/images/horizon-sunglasses.jpg',
-      },
-    ],
-    shippingAddress: {
-      fullName: 'Alex Vance',
-      street: '42 Lotus Boulevard, Apt 8B',
-      city: 'Bengaluru',
-      state: 'Karnataka',
-      postalCode: '560103',
-      country: 'India',
-    },
-  },
-];
 
 export const CartProvider = ({ children }) => {
   // Cart state persisted to localStorage (support migration from nova_cart)
@@ -90,48 +24,70 @@ export const CartProvider = ({ children }) => {
     }
   });
 
-  // User state
+  // User state — authenticated user only (defaults to null if not logged in)
   const [user, setUser] = useState(() => {
     try {
+      const token = localStorage.getItem('aurelia_auth_token') || localStorage.getItem('nova_auth_token');
+      if (!token) return null;
       const saved = localStorage.getItem('aurelia_user') || localStorage.getItem('nova_user');
-      return saved
-        ? JSON.parse(saved)
-        : {
-            id: 'usr_83921',
-            name: 'Alex Vance',
-            email: 'alex.vance@studio-aurelia.co',
-            phone: '+91 98765 43210',
-            memberSince: 'March 2024',
-            addresses: [
-              {
-                id: 'addr_1',
-                title: 'Home / Studio',
-                name: 'Alex Vance',
-                street: '42 Lotus Boulevard, Apt 8B',
-                city: 'Bengaluru',
-                state: 'Karnataka',
-                postalCode: '560103',
-                country: 'India',
-                isDefault: true,
-              },
-            ],
-          };
+      return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
     }
   });
 
-  // Orders state
-  const [orders, setOrders] = useState(() => {
-    try {
-      const saved = localStorage.getItem('aurelia_orders') || localStorage.getItem('nova_orders');
-      if (saved) return JSON.parse(saved);
-      localStorage.setItem('aurelia_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
-      return INITIAL_MOCK_ORDERS;
-    } catch {
-      return INITIAL_MOCK_ORDERS;
+  // Orders state — loaded from authenticated Django backend
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+
+  // Validate session on mount
+  useEffect(() => {
+    const token = localStorage.getItem('aurelia_auth_token') || localStorage.getItem('nova_auth_token');
+    if (token) {
+      api.getMe()
+        .then((userData) => {
+          setUser(userData);
+          localStorage.setItem('aurelia_user', JSON.stringify(userData));
+        })
+        .catch(() => {
+          // Token is expired or invalid
+          setUser(null);
+          setOrders([]);
+          localStorage.removeItem('aurelia_auth_token');
+          localStorage.removeItem('nova_auth_token');
+          localStorage.removeItem('aurelia_user');
+          localStorage.removeItem('nova_user');
+        });
     }
-  });
+  }, []);
+
+  // Fetch orders for logged-in user
+  const refreshOrders = useCallback(async () => {
+    const token = localStorage.getItem('aurelia_auth_token') || localStorage.getItem('nova_auth_token');
+    if (!token) {
+      setOrders([]);
+      return;
+    }
+    setOrdersLoading(true);
+    try {
+      const userOrders = await api.getOrders();
+      if (Array.isArray(userOrders)) {
+        setOrders(userOrders);
+      }
+    } catch (err) {
+      console.error('Failed to load orders from backend:', err);
+    } finally {
+      setOrdersLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      refreshOrders();
+    } else {
+      setOrders([]);
+    }
+  }, [user, refreshOrders]);
 
   // Promo code discount
   const [appliedPromo, setAppliedPromo] = useState(null); // { code: 'AURELIA10', discountPercent: 10 }
@@ -167,21 +123,6 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('aurelia_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
 
-  // Sync user to localStorage
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('aurelia_user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('aurelia_user');
-      localStorage.removeItem('aurelia_auth_token');
-    }
-  }, [user]);
-
-  // Sync orders to localStorage
-  useEffect(() => {
-    localStorage.setItem('aurelia_orders', JSON.stringify(orders));
-  }, [orders]);
-
   // Trigger pulse effect
   const triggerCartPulse = () => {
     setCartPulse(true);
@@ -207,8 +148,8 @@ export const CartProvider = ({ children }) => {
           id: product.id,
           name: product.name,
           category: product.category,
-          price: product.price,
-          originalPrice: product.originalPrice,
+          price: Number(product.price),
+          originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
           image: product.image,
           color,
           quantity,
@@ -285,7 +226,7 @@ export const CartProvider = ({ children }) => {
     showToast('Promo code removed', 'info');
   };
 
-  // FINANCIAL TOTALS
+  // FINANCIAL TOTALS (Used for local bag preview; server calculates official total at checkout)
   const cartSubtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const totalItemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -306,34 +247,33 @@ export const CartProvider = ({ children }) => {
   // AUTH METHODS
   const login = (userData) => {
     setUser(userData);
-    showToast(`Welcome back, ${userData.name}!`);
+    showToast(`Welcome back, ${userData.name || 'Collector'}!`);
   };
 
   const logout = () => {
+    api.logout();
     setUser(null);
+    setOrders([]);
     showToast('Signed out successfully', 'info');
   };
 
   const updateUserProfile = (updatedFields) => {
-    setUser((prev) => ({ ...prev, ...updatedFields }));
+    setUser((prev) => {
+      const updated = { ...prev, ...updatedFields };
+      localStorage.setItem('aurelia_user', JSON.stringify(updated));
+      return updated;
+    });
     showToast('Profile updated successfully');
   };
 
-  // ORDER CREATION
-  const placeOrder = (orderData) => {
-    const newOrder = {
-      id: 'AUR-' + Math.floor(100000 + Math.random() * 900000),
-      date: new Date().toISOString(),
-      items: [...cart],
-      subtotal: cartSubtotal,
-      shipping: shippingFee,
-      discount: discountAmount,
-      tax: estimatedTax,
-      total: cartTotal,
-      status: 'Processing',
+  // ORDER CREATION — connects to real Django backend
+  const placeOrder = async (orderData) => {
+    const newOrder = await api.createOrder({
+      items: cart,
       shippingAddress: orderData.shippingAddress,
-      paymentMethod: orderData.paymentMethod || 'Credit Card',
-    };
+      paymentMethod: orderData.paymentMethod,
+      deliveryMethod: orderData.deliveryMethod,
+    });
 
     setOrders((prev) => [newOrder, ...prev]);
     clearCart();
@@ -349,6 +289,8 @@ export const CartProvider = ({ children }) => {
         wishlist,
         user,
         orders,
+        ordersLoading,
+        refreshOrders,
         toasts,
         appliedPromo,
         cartSubtotal,

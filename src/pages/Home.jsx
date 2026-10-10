@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useDocumentTitle } from '../utils/useDocumentTitle';
 import { PRODUCTS, COVERFLOW_COLLECTION } from '../data/products';
+import { api } from '../services/api';
 import { ProductCard } from '../components/ProductCard';
 import { CategoryBentoGrid } from '../components/CategoryBentoGrid';
 import { HeroProductStudio } from '../components/HeroProductStudio';
@@ -20,12 +21,30 @@ import { Button } from '../components/Button';
 export const Home = () => {
   useDocumentTitle('AURELIA — Curated for the way you live.');
 
+  const [products, setProducts] = useState(PRODUCTS);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
 
+  useEffect(() => {
+    let isMounted = true;
+    api.getProducts()
+      .then((data) => {
+        if (isMounted && data.results && data.results.length > 0) {
+          setProducts(data.results);
+        }
+      })
+      .catch((err) => {
+        console.error('Home: failed to fetch products from backend API:', err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Products for sections
-  const featuredProducts = PRODUCTS.filter((p) => p.featured).slice(0, 4);
-  const newArrivals = PRODUCTS.filter((p) => p.newArrival).slice(0, 4);
+  const featuredProducts = products.filter((p) => p.featured).slice(0, 4);
+  const newArrivals = products.filter((p) => p.newArrival).slice(0, 4);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -147,7 +166,7 @@ export const Home = () => {
             to="/shop"
             className="group inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-900 hover:text-neutral-600 transition-colors"
           >
-            <span>Browse Full Catalog ({PRODUCTS.length})</span>
+            <span>Browse Full Catalog ({products.length})</span>
             <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>

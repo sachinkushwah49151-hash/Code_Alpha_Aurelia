@@ -29,8 +29,15 @@ export const Profile = () => {
   const [addAddressOpen, setAddAddressOpen] = useState(false);
 
   // Edit profile form
-  const [name, setName] = useState(user?.name || 'Alex Vance');
-  const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
+  const [name, setName] = useState(user?.name || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+
+  React.useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setPhone(user.phone || '');
+    }
+  }, [user]);
 
   // Password form
   const [currentPassword, setCurrentPassword] = useState('');
