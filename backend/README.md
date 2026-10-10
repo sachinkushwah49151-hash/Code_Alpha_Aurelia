@@ -224,9 +224,9 @@ Gunicorn WSGI Server (port $PORT)
    - **Runtime**: `Python`
    - **Build Command**:
      ```bash
-     ./build.sh
+     bash ./build.sh
      ```
-     *(Or direct command: `npm install && npm run build && pip install -r backend/requirements.txt && python backend/manage.py migrate --no-input && python backend/manage.py seed_products && python backend/manage.py collectstatic --no-input`)*
+     *(Or direct command: `npm install --include=optional --include=dev && npm run build && pip install -r backend/requirements.txt && python backend/manage.py migrate --no-input && python backend/manage.py seed_products && python backend/manage.py collectstatic --no-input`)*
    - **Start Command**:
      ```bash
      gunicorn --chdir backend aurelia.wsgi:application --bind 0.0.0.0:$PORT
@@ -246,7 +246,7 @@ Under **Environment Variables**, configure:
 | `VITE_API_BASE_URL` | `/api` | Yes |
 | `VITE_USE_MOCK` | `false` | Yes |
 | `PYTHON_VERSION` | `3.11.9` | Optional |
-| `NODE_VERSION` | `20.18.0` | Optional |
+| `NODE_VERSION` | `22.14.0` (LTS; required for Rolldown Linux bindings) | Recommended |
 
 4. Click **Create Web Service**.
 
